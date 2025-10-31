@@ -1,3 +1,4 @@
 shiny
 shiny_validate
+seaborn
 pandas
