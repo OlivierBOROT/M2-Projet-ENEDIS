@@ -1,30 +1,74 @@
+import math
+from typing import Callable, Optional, Tuple, Dict
+import pandas as pd
+import numpy as np
+
+# Attention ! package non compris dans le requirements.txt car lourd et pas utilisé !
 from sentence_transformers import SentenceTransformer
+
+# scikit-learn
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import silhouette_score
-from nltk.corpus import stopwords
-import nltk
-import pandas as pd
-import numpy as np
-import math
-from typing import Callable
- 
-nltk.download('stopwords')
-stop_words_francais = stopwords.words('french')
 
-def regrouper_termes_via_semantique(colonne,
-                                    cleaner: Callable[[str], str] | None,
-                                    n_clusters=None,
-                                    method="silhouette",
-                                    min_k=3, max_k=30,
-                                    batch_size=10000,
-                                    top_words=3,
-                                    ):
+from stop_words import DEBUG, STOP_WORDS_FR
+
+
+def regrouper_termes_via_semantique(
+    colonne: pd.Series,
+    cleaner: Optional[Callable[[str], str]] = None,
+    n_clusters: Optional[int] = None,
+    method: str = "silhouette",
+    min_k: int = 3,
+    max_k: int = 30,
+    batch_size: int = 10000,
+    top_words: int = 3
+) -> Tuple[pd.DataFrame, Dict[int, str], int]:
     """
     Regroupe des textes en clusters sémantiques et génère une classe_lisible synthétique.
+
+    Étapes :
+    1. Nettoyage des textes.
+    2. Encodage des textes en embeddings via SentenceTransformer.
+    3. Détermination du nombre optimal de clusters (optionnel) via différentes méthodes.
+    4. Clustering avec MiniBatchKMeans.
+    5. Extraction des mots-clés TF-IDF par cluster.
+    6. Construction d'une classe_lisible synthétique par cluster.
+
+    Parameters
+    ----------
+    colonne : pd.Series
+        Série contenant les textes à regrouper.
+    cleaner : Callable[[str], str] | None, optional
+        Fonction de nettoyage à appliquer aux textes. Si None, aucun nettoyage.
+    n_clusters : int | None, optional
+        Nombre de clusters à créer. Si None, il sera déterminé automatiquement.
+    method : str, default "silhouette"
+        Méthode pour déterminer automatiquement n_clusters si n_clusters=None.
+        Choix : 'silhouette', 'brooks-carruthers', 'sturges-huntsberger', 'scott', 'freedman-diaconis'.
+    min_k : int, default 3
+        Nombre minimal de clusters pour la méthode silhouette.
+    max_k : int, default 30
+        Nombre maximal de clusters pour la méthode silhouette.
+    batch_size : int, default 10000
+        Taille des batches pour l'encodage des embeddings.
+    top_words : int, default 3
+        Nombre de mots-clés les plus fréquents à utiliser pour construire la classe_lisible.
+
+    Returns
+    -------
+    Tuple[pd.DataFrame, Dict[int, str], int]
+        - DataFrame contenant les colonnes : texte, cluster, mots_cles, classe_lisible.
+        - Dictionnaire {cluster_id: mots_cles TF-IDF principales}.
+        - Nombre de clusters utilisés.
     """
 
-    textes = colonne.apply(cleaner).dropna().reset_index(drop=True)
+
+    # --- Nettoyage des textes ---
+    if cleaner:
+        textes = colonne.apply(cleaner).dropna().reset_index(drop=True)
+    else:
+        textes = colonne.dropna().reset_index(drop=True)
 
     # --- Embeddings ---
     model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
@@ -53,21 +97,28 @@ def regrouper_termes_via_semantique(colonne,
                 if score > best_score:
                     best_score, best_k = score, k
             n_clusters = best_k
-            print(f"Nombre optimal de clusters selon silhouette : {n_clusters} (score={best_score:.3f})")
+
         elif method == "brooks-carruthers":
             n_clusters = max(1, round(5 * math.log(N)))
-            print(f"Nombre de clusters selon Brooks-Carruthers : {n_clusters}")
+
         elif method == "sturges-huntsberger":
             n_clusters = max(1, round(1 + (10/3) * math.log(N)))
-            print(f"Nombre de clusters selon Sturges-Huntsberger : {n_clusters}")
+
         elif method == "scott":
             n_clusters = max(1, round((xmax - xmin) / (3.5 * sigma * N**(-1/3))))
-            print(f"Nombre de clusters selon Scott : {n_clusters}")
+
         elif method == "freedman-diaconis":
             n_clusters = max(1, round((xmax - xmin) / (2 * IQR * N**(-1/3))))
-            print(f"Nombre de clusters selon Freedman-Diaconis : {n_clusters}")
+
         else:
             raise ValueError("method doit être 'silhouette', 'brooks-carruthers', 'sturges-huntsberger', 'scott' ou 'freedman-diaconis'")
+
+        # affichage
+        if DEBUG:
+            if method == "silhouette":
+                print(f"Nombre optimal de clusters selon silhouette : {n_clusters} (score={best_score:.3f})")
+            else:
+                print(f"Nombre de clusters selon {method} : {n_clusters}")
 
     # --- Clustering complet ---
     kmeans = MiniBatchKMeans(n_clusters=n_clusters, random_state=42, batch_size=1000)
@@ -75,7 +126,7 @@ def regrouper_termes_via_semantique(colonne,
     df = pd.DataFrame({"texte": textes, "cluster": labels})
 
     # --- TF-IDF pour mots clés ---
-    vect = CountVectorizer(stop_words=stop_words_francais, ngram_range=(1, 2), max_features=30000)
+    vect = CountVectorizer(stop_words=STOP_WORDS_FR, ngram_range=(1, 2), max_features=30000)
     X_counts = vect.fit_transform(df["texte"])
     tfidf = TfidfTransformer().fit_transform(X_counts)
     features = np.array(vect.get_feature_names_out())
@@ -87,6 +138,7 @@ def regrouper_termes_via_semantique(colonne,
         idx = np.where(df["cluster"] == cluster_id)[0]
         if len(idx) == 0:
             continue
+
         cluster_tfidf = np.asarray(tfidf[idx].mean(axis=0)).ravel()
         top_indices = cluster_tfidf.argsort()[-30:][::-1]  # Pool de termes du cluster
         top_terms = features[top_indices]
@@ -95,7 +147,7 @@ def regrouper_termes_via_semantique(colonne,
         word_count = {}
         for term in top_terms:
             for w in term.split():
-                if w not in stop_words_francais:
+                if w not in STOP_WORDS_FR:
                     word_count[w] = word_count.get(w, 0) + 1
 
         # Sélectionner les mots les plus fréquents

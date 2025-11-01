@@ -2,44 +2,55 @@ import pandas as pd
 import numpy as np
 import re
 import unicodedata
+
+# Attention ! package non compris dans le requirements.txt car lourd et pas utilisé !
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import AgglomerativeClustering
-from nltk.corpus import stopwords
-import nltk
+from stop_words import STOP_WORDS_FR
 
-nltk.download("stopwords", quiet=True)
-stop_words_fr = set(stopwords.words("french"))
-
-# ===================================================
-# Nettoyage du texte
-# ===================================================
 def nettoyer_label(label: str) -> str:
+    """
+    Nettoie et standardise un label texte.
+    
+    Étapes :
+        - Conversion en minuscules
+        - Normalisation Unicode
+        - Suppression des chiffres
+        - Suppression des caractères spéciaux
+        - Suppression des stop words français
+        - Suppression des espaces multiples
+    
+    Args:
+        label (str): Texte à nettoyer.
+    
+    Returns:
+        str: Label nettoyé.
+    """
+
+
     label = str(label).lower()
     label = unicodedata.normalize("NFKC", label)
     label = re.sub(r"\d+", " ", label)
     label = re.sub(r"[^a-zàâçéèêëîïôûùüÿñæœ\s]", " ", label)
     label = re.sub(r"\s+", " ", label).strip()
-    tokens = [t for t in label.split() if t not in stop_words_fr]
+    tokens = [t for t in label.split() if t not in STOP_WORDS_FR]
     return " ".join(tokens)
 
-# ===================================================
-# Fonction principale
-# ===================================================
 def proposer_classes_generales(value_counts: pd.Series, n_clusters=None, verbose=True):
     """
-    Regroupe automatiquement les classes détaillées en grandes familles sémantiques.
+    Regroupe automatiquement des classes détaillées en grandes familles sémantiques.
     
     Args:
-        value_counts : pd.Series (index = classes détaillées, values = effectifs)
-        n_clusters : int ou None (auto)
-        verbose : bool - affiche des logs
+        value_counts (pd.Series): Série pandas (index = classes détaillées, values = effectifs)
+        n_clusters (int, optional): Nombre de clusters. Si None, déterminé automatiquement.
+        verbose (bool): Affiche des logs si True.
     
     Returns:
-        DataFrame avec :
-          - classe_originale
-          - effectif
-          - cluster_id
-          - classe_large_proposee
+        pd.DataFrame: Contenant
+            - classe_originale
+            - effectif
+            - cluster_id
+            - classe_large_proposee
     """
     labels = list(value_counts.index)
     counts = list(value_counts.values)

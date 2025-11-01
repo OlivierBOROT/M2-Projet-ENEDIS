@@ -8,12 +8,31 @@ from Classes_API.API import API
 
 
 class API_ADEME(API):
+    """
+    Classe pour interagir avec l'API DPE d'ADEME (Diagnostic de Performance Énergétique).
+
+    Gère la limitation du nombre de requêtes, la pagination, et la récupération des données
+    pour les bâtiments existants ou neufs selon les régions spécifiées.
+
+    Hérite de la classe abstraite API
+    """
+
+
     MAX_REQUESTS_PER_MIN = 600
     MIN_INTERVAL = 60 / MAX_REQUESTS_PER_MIN
     url_existant = "https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines"
     url_neuf = "https://data.ademe.fr/data-fair/api/v1/datasets/dpe02neuf/lines"
 
+
     def __init__(self, region: int | list[int] = 84):
+        """
+        Initialisation de l'objet API_ADEME.
+
+        Args:
+            region (int | list[int]): Code(s) de région(s) pour filtrer les données.
+        """
+
+
         self.region = region
         self._last_cycle_time = 0.0
 
@@ -23,16 +42,30 @@ class API_ADEME(API):
             "qs": ""
         }
 
+
     def _debug_log(self, func_name: str, message: str) -> None:
-        """Affiche un message de debug formaté si DEBUG est actif."""
+        """
+        Affiche un message de debug formaté si DEBUG est actif.
+
+        Args:
+            func_name (str): Nom de la fonction où le debug est appelé.
+            message (str): Message à afficher.
+        """
+
+
         if DEBUG:
             print(f"[DEBUG] {self.__class__.__name__}.{func_name}() → {message}")
 
+
     def _respect_rate_limit(self, duration: float) -> None:
         """
-        Ajoute un délai pour respecter la limite ADEME.
-        On compte le temps total de la requête (durée) dans le calcul.
+        Ajoute un délai pour respecter la limite de requêtes de l'API ADEME.
+
+        Args:
+            duration (float): Durée de la dernière requête.
         """
+
+
         elapsed_since_last = time.time() - self._last_cycle_time
         remaining = self.MIN_INTERVAL - elapsed_since_last - duration
 
@@ -43,8 +76,23 @@ class API_ADEME(API):
 
         self._last_cycle_time = time.time()
 
+
+    # retry_request à retrouver dans le fichier API_decorator
     @retry_request(max_retries=3, delay=1, backoff=2)
     def _request(self, url: str, next_url: bool = False, **kwargs) -> requests.Response:
+        """
+        Effectue une requête HTTP GET sur l'API ADEME.
+
+        Args:
+            url (str): URL de la requête.
+            next_url (bool): Indique si l'URL contient déjà les paramètres pour la pagination.
+            **kwargs: Paramètres supplémentaires pour la requête.
+
+        Returns:
+            requests.Response: Réponse HTTP de l'API.
+        """
+
+
         params = None
         if not next_url: # si on n'a pas déjà les paramètres dans l'url
             params = dict(self.params)
@@ -75,7 +123,19 @@ class API_ADEME(API):
         response.raise_for_status()
         return response
 
+
     def _get_content(self, content: dict[str, Any]) -> dict[str, Any]:
+        """
+        Extrait le contenu d'une réponse au format JSON.
+
+        Args:
+            content (dict[str, Any]): Contenu JSON de la réponse API.
+
+        Returns:
+            list[dict[str, Any]]: Liste des enregistrements.
+        """
+
+
         df = content.get("results", [])
         self._debug_log(
             "_get_content",
@@ -85,22 +145,57 @@ class API_ADEME(API):
 
         return df
 
+
     def _get_next(self, content: dict[str, Any]) -> str | None:
+        """
+        Récupère le lien vers la page suivante (pagination).
+
+        Args:
+            content (dict[str, Any]): Contenu JSON de la réponse API.
+
+        Returns:
+            str | None: URL suivante ou None si fin de pagination.
+        """
+
+
         next_link = content.get("next", False)
         self._debug_log("_get_next", f"next_link={next_link}")
         return next_link if next_link else None
 
+
     def _get_length(self, content: dict[str, Any]) -> int:
-        """Retourne le nombre de lignes dans 'results'."""
+        """
+        Retourne le nombre de lignes dans 'results'.
+
+        Args:
+            content (dict[str, Any]): Contenu JSON de la réponse API.
+
+        Returns:
+            int: Nombre de lignes.
+        """
+
+
         length = len(content.get("results", []))
         self._debug_log("_get_length", f"length={length}")
         return length
 
+
     def _get_total(self, content: dict[str, Any]) -> int:
-        """Retourne le nombre total de lignes (content['total'])."""
+        """
+        Retourne le nombre total de lignes disponibles sur l'API pour la requête donnée.
+
+        Args:
+            content (dict[str, Any]): Contenu JSON de la réponse API.
+
+        Returns:
+            int: Nombre total de lignes.
+        """
+
+
         total = content.get("total", 0)
         self._debug_log("_get_total", f"total={total}")
         return total
+
 
     def get_data(
         self,
@@ -109,6 +204,19 @@ class API_ADEME(API):
         print_progress: bool = False,
         **kwargs
     ) -> dict[str, Any]:
+        """
+        Récupère les données de l'ADEME selon les paramètres.
+
+        Args:
+            neuf (bool): True pour les bâtiments neufs, False pour existants.
+            nrows (int | bool): Nombre maximum de lignes à récupérer, False pour tout.
+            print_progress (bool): Affiche la progression si True.
+            **kwargs: Paramètres supplémentaires pour la requête API.
+
+        Returns:
+            list[dict[str, Any]]: Liste des enregistrements.
+        """
+
 
         url =  self.url_neuf if neuf else self.url_existant
 
@@ -131,8 +239,9 @@ class API_ADEME(API):
             response = self._request(url = next_link, next_url = True)
             content = response.json()
 
-            if self._get_length(content):
-                data += self._get_content(content)
+            batch = self._get_content(content)
+            if batch:
+                data += batch
 
                 if print_progress or nrows:
                     i += self._get_length(content)
@@ -141,7 +250,8 @@ class API_ADEME(API):
                         print(f"{i} / {total}")
 
                     if nrows and i >= nrows:
-                        return data
+                        return data[:nrows]
+
             next_link = self._get_next(content)
 
             cycle_duration = time.time() - start_cycle
