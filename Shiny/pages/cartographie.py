@@ -43,22 +43,10 @@ def page():
                 class_="shadow mb-4; height: 600px;"
             ),
 
-            # Row of download buttons with spacing
-            ui.row(
-                ui.column(
-                    4,
-                    ui.div(ui.download_button("download1", "Download 1"),
-                           class_="d-grid mb-2")
-                ),
-                ui.column(
-                    4, 
-                    ui.div(ui.download_button("download2", "Download 2"),
-                           class_="d-grid mb-2")
-                ),
-                ui.column(4,
-                          ui.div(ui.download_button("download3", "Download 3"),
-                                 class_="d-grid mb-2")
-                ),
+            # Download button
+            ui.div(
+                ui.download_button("download_map", "Download"),
+                class_="d-grid mb-2",
                 style="margin-top: 30px;"
             ),
             style="padding-right: 20px; padding-left: 20px;"

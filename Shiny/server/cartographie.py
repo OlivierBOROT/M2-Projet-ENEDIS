@@ -1,10 +1,15 @@
 import folium
 import pandas as pd
 import branca.colormap as cm
-from shiny import render
+from shiny import render, reactive
 from shinywidgets import render_widget
 from pathlib import Path
 import json
+from io import BytesIO
+from datetime import date
+import random
+import asyncio
+import tempfile
 
 here = Path(__file__).parent.parent
 DEPARTEMENTS_GEOJSON_PATH = here / "data" / "departments_region84.geojson"
@@ -27,7 +32,11 @@ DPE_COLORS = {
     "G": "#d73027"   # red
 }
 
+MAPS_DIR = here / Path("maps")
+MAPS_DIR.mkdir(exist_ok=True)
+
 def setup_carto(input, output, session, dataset):
+    current_map = reactive.Value("")
 
     @render.ui
     def render_map():
@@ -113,4 +122,32 @@ def setup_carto(input, output, session, dataset):
             colormap.caption = kpi_choice
             colormap.add_to(m)
 
+        # Add a background tile layer before saving
+        folium.TileLayer(
+            tiles="OpenStreetMap",  # or another provider
+            name="Background",
+            attr="Map data © OpenStreetMap contributors",
+            control=True
+        ).add_to(m)
+
+        # Optional: add LayerControl if you want
+        folium.LayerControl().add_to(m)
+
+        # Save to a temporary file and store path reactively
+        with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as tmp_file:
+            m.save(tmp_file.name)
+            current_map.set(tmp_file.name)  # store temp path
+
         return m
+
+    @render.download(
+    filename=lambda: f"{date.today().isoformat()}-{random.randint(100, 999)}.html"
+    )
+    async def download_map():
+        temp_map_path = current_map.get()
+        if not temp_map_path:
+            yield b""
+            return
+
+        with open(temp_map_path, "rb") as f:
+            yield f.read()
