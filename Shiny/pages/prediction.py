@@ -9,7 +9,8 @@ def page():
             ui.column(
                 4,  # largeur sur 12
                 ui.h3("Votre logement 1/2"),
-                ui.input_text("type_logement", "Type de logement:"),
+                ui.input_select("type_logement", "Type de logement:", 
+                               ["maison","appartement"]),
                 ui.input_numeric("surface", "Surface (m²):", 0),
                 ui.input_text("code_postal", "Code postal:"),
                 ui.input_text("commune", "Commune:"),
@@ -20,9 +21,9 @@ def page():
             ui.column(
                 4,
                 ui.h3("Votre logement 2/2"),
-                ui.input_numeric("nb_nvx_chauffes", "Nombre de niveaux chauffés:", 0),
-                ui.input_numeric("hauteur_plafond", "Hauteur sous plafond (m):", 0),
-                ui.input_select("isolation_toit", "Isolation du toit:", 
+                ui.input_numeric("nombre_niveau_logement", "Nombre de niveaux chauffés:", 0),
+                ui.input_numeric("hauteur_sous_plafond", "Hauteur sous plafond (m):", 0),
+                ui.input_select("isolation_toiture", "Isolation du toit:", 
                                 ["Bonne", "Moyenne", "Faible"]),
                 ui.input_checkbox("logement_dessus", "Logement au-dessus ?"),
                 ui.input_select("isolation_plancher", "Isolation du plancher:", 
