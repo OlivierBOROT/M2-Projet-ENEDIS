@@ -8,32 +8,36 @@ from server.import_rapports import setup_rapports
 from server.accueil import setup_accueil
 from server.donnees import setup_donnees
 from server.cartographie import setup_carto
+from server.graphs import setup_graphs
 
 here = Path(__file__).parent
 DATA_PATH = here / "data/data.parquet"
 
 def server(input, output, session):
     df = pd.read_parquet(DATA_PATH)
+    
     # GENERAL
     @reactive.calc
     def dataset():
-        return df.copy() # au cas où
+        """Retourne une copie du DataFrame principal pour usage réactif."""
+        return df.copy() 
+    
+    # Préparation des choix non réactifs pour la mise à jour de l'UI (DPE)
+    choices_list = df['periode_construction'].unique().tolist()
+    choices_list = [c for c in choices_list if pd.notna(c)]
+    choices_list.sort()
+    dpe_choices = ["Toutes"] + choices_list
 
     # ACCUEIL
     md = setup_accueil(session)
+    
     # CONTEXTE
-
-    # CONTEXTE : donnees
     setup_donnees(input, output, session, dataset)
-
-    # CONTEXTE : rapports
     setup_rapports(input, output, session)
 
     # VISUALISATION
-
-    # VISUALISATION : KPI - Graphs
-
-    # VISUALISATION : catrographie
+    setup_graphs(input, output, session, dataset, dpe_choices)
     setup_carto(input, output, session)
 
     # PREDICTION
+    # ...
