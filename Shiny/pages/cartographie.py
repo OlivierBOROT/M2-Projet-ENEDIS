@@ -6,7 +6,7 @@ def page():
         # Sidebar on the right
         ui.sidebar(
             ui.h3(""),
-            ui.h3("Inputs"),
+            ui.h3("Choix des données"),
             ui.input_radio_buttons(
                 id="kpi_choice",
                 label="Choix du KPI",
@@ -21,18 +21,20 @@ def page():
             ui.input_radio_buttons(
                 id="geo_level",
                 label="Niveau géographique",
-                choices=["par département", "par code_postal"],
+                choices=[
+                    "par département",
+                    "par code_postal"
+                    ],
                 selected="par département"
             ),
             position="right",
             bg="#f8f9fa",
-            style="padding: 20px; border-left: 2px solid #ddd; min-width: 300px;",
+            style="padding: 20px; border-left: 2px solid #ddd;",
         ),
 
         # Main content
         ui.div(
             ui.h2("Cartographie"),
-            ui.p("Visualisation cartographique des données."),
 
             # Card for the map
             ui.card(
