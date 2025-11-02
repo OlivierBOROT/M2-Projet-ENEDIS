@@ -39,7 +39,7 @@ Graphique n°2 : la représentation graphique de la consommation électrique d'u
 
 Graphique n°3 : la répartition en proportion des étiquettes DPE selon le type d'énergie de chauffage utilisée; évaluez ainsi l'impact potentiel de l'énergie utilisée pour votre chauffage sur l'attribution d'une étiquette DFPE ou d'une autre. Pour cela, sélectionnez simplement le type d'énergie qui vous intéresse dans la barre de filtre et observez.
 
-Graphique n°4 : 
+Graphique n°4 : la courbe permet de représenter la variation des surfaces habitables moyennes selon les périodes de construction; connaître la consommation par m² est important, mais le niveau d'impact (économique et écologique) peut changer drastiquement en fonction de la surface concernée, c'est pourquoi il peut être inmportant d'observer les archétypes de surfaces concernés.
 
 
 ## Rapport
