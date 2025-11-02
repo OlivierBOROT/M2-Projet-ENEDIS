@@ -53,22 +53,26 @@ Le fichier source `donnees_finales.csv` a été importé puis échantillonné à
 
 Les variables explicatives retenues sont :
 
-- `version_dpe`  
-- `surface_habitable_logement`  
-- `hauteur_sous_plafond`  
-- `nombre_niveau_logement`  
-- `type_batiment`  
-- `qualite_isolation_murs`  
-- `qualite_isolation_plancher_bas`  
-- `isolation_toiture`  
-- `periode_construction`
+- 'qualite_isolation_murs'
+- 'type_batiment'
+- 'type_installation_ecs'
+- 'type_energie_principale_chauffage'
+- 'qualite_isolation_plancher_bas'
+- 'type_installation_chauffage'
+- 'surface_habitable_logement'
+- 'hauteur_sous_plafond'
+- 'nombre_niveau_logement'
+- 'isolation_toiture'
+- 'type_generateur_n1_ecs_n1'
+- 'type_generateur_chauffage_principal'
+- 'periode_construction'
 
 Les valeurs manquantes ont été imputées :
 
 - Moyenne pour les variables numériques  
 - Valeur la plus fréquente pour les variables catégorielles
 
-Les variables catégorielles ont ensuite été encodées par la méthode **One-Hot Encoding** (`pd.get_dummies`), générant **19 variables explicatives**.
+Les variables catégorielles ont ensuite été encodées par la méthode **One-Hot Encoding** (`pd.get_dummies`), générant **65 variables explicatives**.
 
 Répartition initiale des étiquettes DPE :
 
@@ -116,7 +120,7 @@ Les performances obtenues sur le jeu de test sont les suivantes :
 Une matrice de confusion montre que les erreurs les plus fréquentes se produisent entre classes voisines (D ↔ E, E ↔ F).
 
 
-## 5. Optimisation du modèle
+## 4. Optimisation du modèle
 
 Pour améliorer la performance du modèle initial, une **optimisation d’hyperparamètres** a été effectuée via `RandomizedSearchCV`.
 
@@ -129,32 +133,37 @@ Pour améliorer la performance du modèle initial, une **optimisation d’hyperp
 - `colsample_bytree = 0.9`
 
 
-## 6. Résultats du modèle optimisé
+## 5. Résultats du modèle optimisé
 
-Après optimisation, le modèle montre une légère amélioration :
+**Accuracy globale : 0.542 (≈ 54 %)**
 
-Après optimisation des hyperparamètres, le modèle XGBoost atteint une accuracy globale de 0.48, ce qui peut sembler modeste mais reste cohérent compte tenu du déséquilibre important entre les classes DPE. En effet, les classes intermédiaires C, D et E, qui représentent la majorité des observations, conservent une bonne stabilité et des performances correctes.
+Précision / Rappel / F1-score par classe :
 
-L’optimisation a surtout permis d’améliorer la prédiction des classes minoritaires, en particulier A, dont le f1-score atteint 0.64, indiquant que le modèle identifie mieux ces logements rares. Les classes B et G restent plus difficiles à estimer, ce qui est attendu étant donné leur faible représentation.
+Les classes intermédiaires C, D et E restent les mieux prédites, avec des f1-scores autour de 0.54 à 0.70.
 
-La matrice de confusion montre que la plupart des erreurs concernent des confusions entre classes proches (D ↔ E, E ↔ F), ce qui est logique car ces catégories sont physiquement et énergétiquement similaires. Ainsi, même si l’accuracy globale n’augmente que légèrement, l’optimisation du modèle améliore la qualité des prédictions pour les classes les plus rares et réduit légèrement les confusions critiques entre classes voisines.
+Les classes minoritaires ou extrêmes (A, B, F, G) présentent des performances plus modestes, bien que la classe A atteigne un f1-score de 0.73.
 
+La classe F demeure la plus difficile à identifier (f1-score ≈ 0.26).
 
+La matrice de confusion confirme que les erreurs se produisent principalement entre classes voisines, notamment D ↔ E et E ↔ F, ce qui est cohérent avec la proximité des étiquettes de DPE.
 
 ## 7. Sauvegarde du modèle
 
 Le modèle optimisé a été sauvegardé au format `joblib` sous le nom :
 
-> `modele_dpe_xgb.pkl`
+> `modele_dpe_xgb2.pkl`
 
 Ce fichier peut être directement réutilisé pour une application d’estimation automatique du DPE.
 
 ## 8. Interprétation des résultats
 
-Le modèle **XGBoost** parvient à reproduire de manière satisfaisante le comportement du diagnostic DPE :
+L’analyse des performances du modèle XGBoost met en évidence une bonne cohérence globale entre les prédictions et les étiquettes réelles du DPE. Le modèle parvient à distinguer les profils énergétiques typiques à partir des caractéristiques structurelles du bâti, tout en conservant une certaine difficulté à différencier les classes les plus proches sur l’échelle énergétique.
 
-- Les **classes intermédiaires (C, D, E)** sont les mieux prédites, avec une bonne stabilité globale.
-- Les classes **classes minoritaires (A, B, G)**demeurent plus difficiles à estimer, bien que la classe A montre une nette amélioration après optimisation.
+Les classes centrales sont globalement bien captées, traduisant la capacité du modèle à modéliser les comportements majoritaires présents dans les données. À l’inverse, les classes extrêmes ou peu représentées tendent à être partiellement assimilées à leurs voisines.
+
+La structure des erreurs observée dans la matrice de confusion reflète cette continuité naturelle des niveaux de performance énergétique : les logements situés aux frontières entre deux classes (par exemple D et E) présentent souvent des caractéristiques similaires, rendant leur classification plus incertaine.
+
+Dans l’ensemble, le modèle capture correctement les grandes tendances de la consommation énergétique et offre une base solide pour une estimation automatisée du DPE, tout en laissant entrevoir des axes d’amélioration.
 
 
 # III. Section Machine Learning - Régression
@@ -162,26 +171,23 @@ Le modèle **XGBoost** parvient à reproduire de manière satisfaisante le compo
 ### 1. Variables explicatives et cible
 - Cible : consommation énergétique sur 5 usages (`conso_5_usages_ef`)  
 - Variables explicatives utilisées :  
-  - version_dpe  
-  - qualite_isolation_murs  
-  - type_batiment  
-  - classe_altitude  
-  - type_installation_ecs  
-  - type_energie_principale_chauffage  
-  - qualite_isolation_plancher_bas  
-  - zone_climatique  
-  - type_installation_chauffage  
-  - surface_habitable_logement  
-  - hauteur_sous_plafond  
-  - nombre_niveau_logement  
-  - isolation_toiture  
-  - type_generateur_n1_ecs_n1  
-  - type_generateur_chauffage_principal  
-  - type_generateur_froid  
-  - periode_construction
+  - 'qualite_isolation_murs'
+  - 'type_batiment'
+  - 'type_installation_ecs'
+  - 'type_energie_principale_chauffage'
+  - 'qualite_isolation_plancher_bas'
+  - 'type_installation_chauffage'
+  - 'surface_habitable_logement'
+  - 'hauteur_sous_plafond'
+  - 'nombre_niveau_logement'
+  - 'isolation_toiture'
+  - 'type_generateur_n1_ecs_n1'
+  - 'type_generateur_chauffage_principal
+  - 'periode_construction'
+  - 'code_postal_ban'
 - Transformation logarithmique appliquée (`log1p`) pour stabiliser la variance  
 - Variables catégorielles encodées par One-Hot Encoding  
-- 97 variables explicatives après encodage  
+- 66 variables explicatives après encodage  
 
 ### 2. Division train/test
 - 70 % pour l’entraînement, 30 % pour le test  
@@ -198,7 +204,7 @@ Le modèle **XGBoost** parvient à reproduire de manière satisfaisante le compo
 - Root Mean Squared Error (RMSE) : 39 414 kWh  
 - Coefficient de détermination (R²) : 0,449  
 
-**Interprétation :**
+  **Interprétation :**
 - Le RMSE indique qu'en moyenne, les prédictions du modèle diffèrent d'environ 39 414 kWh par rapport aux valeurs réelles.  
 - Le R² de 0,449 signifie que le modèle explique environ 45 % de la variance totale de la consommation énergétique.  
 - Ces résultats montrent que le modèle capture partiellement la structure des données, mais des marges d'amélioration restent possibles, notamment par l’optimisation des hyperparamètres.
@@ -223,19 +229,23 @@ Le modèle **XGBoost** parvient à reproduire de manière satisfaisante le compo
 - Prédiction sur le jeu de test : 210 000 lignes  
 - Conversion inverse du logarithme (`expm1`) pour interpréter en kWh réels  
 - Métriques obtenues :  
-  - Mean Squared Error (MSE) : 1 369 894 047.15  
-  - Root Mean Squared Error (RMSE) : 37 012.08 kWh  
-  - Coefficient de détermination (R²) : 0.527  
+  - Mean Squared Error (MSE) : 1027647107.16  
+  - Root Mean Squared Error (RMSE) : 32056.94 kWh  
+  - Coefficient de détermination (R²) : 0.580  
 - Interprétation :  
   - Modèle reproduit de manière satisfaisante la consommation énergétique globale  
   - Prévisions proches des valeurs réelles, cohérence générale des tendances  
-- Graphiques possibles : histogramme des résidus, prédictions vs valeurs réelles  
 
 ### 7. Sauvegarde du modèle
-- Modèle optimisé enregistré via `joblib`,  `modele_conso_xgb_opt.pkl`  
+- Modèle optimisé enregistré via `joblib`,  `modele_conso_xgb_opt2.pkl`  
 - Ce fichier peut être directement réutilisé pour prédiction automatique de la consommation énergétique
 
 ### 8. Interprétation des résultats
-- Le modèle XGBoost Regressor est capable de capturer les variations de consommation à partir des caractéristiques structurelles et énergétiques du logement  
-- Bien que certaines prédictions individuelles puissent présenter des écarts importants, le modèle conserve une bonne capacité à reproduire la tendance globale des consommations  
+Le modèle XGBoost optimisé parvient à reproduire les variations globales de la consommation énergétique des logements.
+Les prédictions suivent les tendances générales observées dans les données réelles.
+
+L’erreur moyenne (RMSE ≈ 32 000 kWh) indique une certaine variabilité résiduelle, principalement liée à la diversité des profils de bâtiments et aux incertitudes sur les données d’entrée.
+Le coefficient de détermination (R² ≈ 0.58) montre que le modèle capture une part significative de la variance de la consommation énergétique, bien qu’une proportion non négligeable reste inexpliquée.
+
+Les résultats suggèrent que le modèle appréhende correctement les facteurs structurels majeurs influençant la consommation (isolation, surface, type de chauffage, période de construction)
 
