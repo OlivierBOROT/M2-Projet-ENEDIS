@@ -48,13 +48,15 @@ def server(input, output, session):
 
     # ACCUEIL
     md = setup_accueil(session)
-    
+
     # CONTEXTE
     setup_donnees(input, output, session, dataset)
     setup_rapports(input, output, session)
 
     # VISUALISATION
-    setup_graphs(input, output, session, dataset, dpe_choices, energie_choices, logement_choices) # NOUVEL ARGUMENT
-    setup_carto(input, output, session)
+    setup_graphs(input, output, session, dataset, dpe_choices, energie_choices, logement_choices)
+
+    # VISUALISATION : CARTO
+    setup_carto(input, output, session, dataset)
 
     # PREDICTION
