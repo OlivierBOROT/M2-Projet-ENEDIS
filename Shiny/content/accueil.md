@@ -34,6 +34,6 @@ Pour naviguer dans l’application, utilisez la barre de menu en haut de l’éc
 Le projet a été réalisé par **PythonGroup**, composée des membres suivants :  
 
 - **Olivier BOROT**  
-- **Anne-Camille Dial**  
+- **Anne-Camille Vial**  
 - **Aya Mecheri**  
 - **Constantin Rey-Coquais**
