@@ -2,7 +2,7 @@ Rapport de Machine Learning- Projet Enedis
 ===========================================
 
 
-I.	Section Contexte & Méthodologie
+# I.	Section Contexte & Méthodologie
 ----------------------------------------
 # A.	Contexte : 
 Le présent projet a été réalisé dans le cadre du cours « Python Machine Learning » donné par Anthony SARDELLITTI au sein du Master 2 SISE de l’Université Lumière Lyon2.
@@ -44,13 +44,207 @@ Compte tenu de la date à laquelle ce projet est réalisé (d’octobre à novem
 Afin de circonscrire le périmètre de l’évaluation du DPE, un choix a été fait de n’observer et prédire que les DPE établis sur le territoire Auvergne Rhône Alpes, celui-ci présentant par ailleurs une vaste source de données avec d’importantes variations dans les DPE.
 En effet, la région, comparativement à d’autres régions plus littorales ou plus au Nord du pays, a été assez peu impactée par les bombardements et destructions massives de la Seconde Guerre Mondiale, permettant une plus importante conservation et présence de bâtiments datant d’avant 1948. D’autre part, la région concentre 3 grands centres de gravité métropolitains : Lyon, Grenoble et Clermont-Ferrand. Cette attractivité des villes et cette concentration de main d’œuvre et de capitaux en fait une région avec une importante activité de construction et de rénovation.
 
-# B. Méthodologie
+# B. Méthodologie 
+Dans un premier temps, l’ensemble du processus de prédiction a été testé avec un modèle RandomForestRegressor, incluant la sélection des variables explicatives, l’imputation des valeurs manquantes, l’encodage des variables catégorielles et la transformation logarithmique de la cible. Ce modèle a permis de vérifier la faisabilité de la tâche et d’obtenir des résultats de référence. Après exploration d’autres algorithmes et bibliothèques, le modèle XGBoost Regressor a été retenu comme solution finale, offrant de meilleures performances en termes de précision et de généralisation tout en restant robuste face à la structure des données. L’ensemble du pipeline de préparation des données a été conservé pour l’entraînement du modèle XGBoost optimisé.
+# II. Section Machine Learning - Classification
+## 1. Préparation et échantillonnage des données
+
+Le fichier source `donnees_finales.csv` a été importé puis échantillonné à **700 000 lignes** pour réduire la taille du jeu de données et accélérer le traitement.
+
+Les variables explicatives retenues sont :
+
+- 'qualite_isolation_murs'
+- 'type_batiment'
+- 'type_installation_ecs'
+- 'type_energie_principale_chauffage'
+- 'qualite_isolation_plancher_bas'
+- 'type_installation_chauffage'
+- 'surface_habitable_logement'
+- 'hauteur_sous_plafond'
+- 'nombre_niveau_logement'
+- 'isolation_toiture'
+- 'type_generateur_n1_ecs_n1'
+- 'type_generateur_chauffage_principal'
+- 'periode_construction'
+
+Les valeurs manquantes ont été imputées :
+
+- Moyenne pour les variables numériques  
+- Valeur la plus fréquente pour les variables catégorielles
+
+Les variables catégorielles ont ensuite été encodées par la méthode **One-Hot Encoding** (`pd.get_dummies`), générant **65 variables explicatives**.
+
+Répartition initiale des étiquettes DPE :
+
+| Classe | Proportion |
+|--------|-------------|
+| C | 31.6 % |
+| D | 28.9 % |
+| E | 19.1 % |
+| F | 7.8 % |
+| G | 5.6 % |
+| B | 4.4 % |
+| A | 2.7 % |
+
+Afin de compenser ce déséquilibre, la méthode **SMOTE** a été appliquée, produisant un ensemble d’entraînement équilibré entre les 7 classes (A à G).
+
+Les données ont été divisées selon un ratio :
+
+- **70 %** pour l’entraînement  
+- **30 %** pour le test  
 
 
+## 2. Entraînement initial
 
-II.	Section Résultats & Métriques
-====================================
+Un premier modèle **XGBoost** a été entraîné sur les données rééchantillonnées.  
+Les paramètres de base utilisés incluaient :
+
+- `n_estimators = 200`  
+- `max_depth = 8`  
+- `learning_rate = 0.1`  
+- `subsample = 0.8`  
+- `colsample_bytree = 0.8`  
+
+Le modèle a ensuite été évalué sur le jeu de test.
+
+## 3. Résultats du modèle initial
+
+Les performances obtenues sur le jeu de test sont les suivantes :
+
+- **Accuracy globale : 0.477 (≈ 48 %)**  
+- **Précision / Rappel / F1-score :**
+  - Les classes intermédiaires **C**, **D** et **E** sont les mieux prédites.  
+  - Les classes extrêmes (**A**, **G**) montrent des performances correctes compte tenu de leur rareté.  
+  - La classe **F** reste difficile à identifier (f1-score ≈ 0.18).  
+
+Une matrice de confusion montre que les erreurs les plus fréquentes se produisent entre classes voisines (D ↔ E, E ↔ F).
 
 
-III.	Section Interprétation & Limites
-===========================================
+## 4. Optimisation du modèle
+
+Pour améliorer la performance du modèle initial, une **optimisation d’hyperparamètres** a été effectuée via `RandomizedSearchCV`.
+
+### Meilleurs paramètres trouvés
+
+- `n_estimators = 150`  
+- `max_depth = 8`  
+- `learning_rate = 0.2`  
+- `subsample = 0.8`  
+- `colsample_bytree = 0.9`
+
+
+## 5. Résultats du modèle optimisé
+
+**Accuracy globale : 0.542 (≈ 54 %)**
+
+Précision / Rappel / F1-score par classe :
+
+Les classes intermédiaires C, D et E restent les mieux prédites, avec des f1-scores autour de 0.54 à 0.70.
+
+Les classes minoritaires ou extrêmes (A, B, F, G) présentent des performances plus modestes, bien que la classe A atteigne un f1-score de 0.73.
+
+La classe F demeure la plus difficile à identifier (f1-score ≈ 0.26).
+
+La matrice de confusion confirme que les erreurs se produisent principalement entre classes voisines, notamment D ↔ E et E ↔ F, ce qui est cohérent avec la proximité des étiquettes de DPE.
+
+## 7. Sauvegarde du modèle
+
+Le modèle optimisé a été sauvegardé au format `joblib` sous le nom :
+
+> `modele_dpe_xgb2.pkl`
+
+Ce fichier peut être directement réutilisé pour une application d’estimation automatique du DPE.
+
+## 8. Interprétation des résultats
+
+L’analyse des performances du modèle XGBoost met en évidence une bonne cohérence globale entre les prédictions et les étiquettes réelles du DPE. Le modèle parvient à distinguer les profils énergétiques typiques à partir des caractéristiques structurelles du bâti, tout en conservant une certaine difficulté à différencier les classes les plus proches sur l’échelle énergétique.
+
+Les classes centrales sont globalement bien captées, traduisant la capacité du modèle à modéliser les comportements majoritaires présents dans les données. À l’inverse, les classes extrêmes ou peu représentées tendent à être partiellement assimilées à leurs voisines.
+
+La structure des erreurs observée dans la matrice de confusion reflète cette continuité naturelle des niveaux de performance énergétique : les logements situés aux frontières entre deux classes (par exemple D et E) présentent souvent des caractéristiques similaires, rendant leur classification plus incertaine.
+
+Dans l’ensemble, le modèle capture correctement les grandes tendances de la consommation énergétique et offre une base solide pour une estimation automatisée du DPE, tout en laissant entrevoir des axes d’amélioration.
+
+
+# III. Section Machine Learning - Régression
+
+### 1. Variables explicatives et cible
+- Cible : consommation énergétique sur 5 usages (`conso_5_usages_ef`)  
+- Variables explicatives utilisées :  
+  - 'qualite_isolation_murs'
+  - 'type_batiment'
+  - 'type_installation_ecs'
+  - 'type_energie_principale_chauffage'
+  - 'qualite_isolation_plancher_bas'
+  - 'type_installation_chauffage'
+  - 'surface_habitable_logement'
+  - 'hauteur_sous_plafond'
+  - 'nombre_niveau_logement'
+  - 'isolation_toiture'
+  - 'type_generateur_n1_ecs_n1'
+  - 'type_generateur_chauffage_principal
+  - 'periode_construction'
+  - 'code_postal_ban'
+- Transformation logarithmique appliquée (`log1p`) pour stabiliser la variance  
+- Variables catégorielles encodées par One-Hot Encoding  
+- 66 variables explicatives après encodage  
+
+### 2. Division train/test
+- 70 % pour l’entraînement, 30 % pour le test  
+- Pas de stratification nécessaire pour la régression  
+- Jeu d’entraînement : 490 000 lignes, test : 210 000 lignes  
+
+### 3. Entraînement du modèle XGBoost Regressor
+- Modèle de base : `XGBRegressor`  
+- Paramètres initiaux : n_estimators = 300, max_depth = 8, learning_rate = 0.1, subsample = 0.8, colsample_bytree=0.8, random_state=42
+- Entraînement effectué sur le jeu rééchantillonné  
+
+### 4. Résultats du modèle XGBoost Regressor initial
+- Mean Squared Error (MSE) : 1 553 460 999,55  
+- Root Mean Squared Error (RMSE) : 39 414 kWh  
+- Coefficient de détermination (R²) : 0,449  
+
+  **Interprétation :**
+- Le RMSE indique qu'en moyenne, les prédictions du modèle diffèrent d'environ 39 414 kWh par rapport aux valeurs réelles.  
+- Le R² de 0,449 signifie que le modèle explique environ 45 % de la variance totale de la consommation énergétique.  
+- Ces résultats montrent que le modèle capture partiellement la structure des données, mais des marges d'amélioration restent possibles, notamment par l’optimisation des hyperparamètres.
+### 5. Optimisation des hyperparamètres
+- Recherche aléatoire avec validation croisée (RandomizedSearchCV) sur 20 combinaisons  
+- Paramètres testés :  
+  - n_estimators : [100, 200, 300]  
+  - max_depth : [6, 10, 15]  
+  - learning_rate : [0.01, 0.05, 0.1]  
+  - subsample : [0.6, 0.8, 1.0]  
+  - colsample_bytree : [0.6, 0.8, 1.0]  
+  - min_child_weight : [1, 5, 10]  
+- Meilleurs paramètres trouvés :  
+  - n_estimators = 200  
+  - max_depth = 15  
+  - learning_rate = 0.1  
+  - subsample = 1.0  
+  - colsample_bytree = 0.8  
+  - min_child_weight = 1  
+
+### 6. Évaluation du modèle optimisé
+- Prédiction sur le jeu de test : 210 000 lignes  
+- Conversion inverse du logarithme (`expm1`) pour interpréter en kWh réels  
+- Métriques obtenues :  
+  - Mean Squared Error (MSE) : 1027647107.16  
+  - Root Mean Squared Error (RMSE) : 32056.94 kWh  
+  - Coefficient de détermination (R²) : 0.580  
+- Interprétation :  
+  - Modèle reproduit de manière satisfaisante la consommation énergétique globale  
+  - Prévisions proches des valeurs réelles, cohérence générale des tendances  
+
+### 7. Sauvegarde du modèle
+- Modèle optimisé enregistré via `joblib`,  `modele_conso_xgb_opt2.pkl`  
+- Ce fichier peut être directement réutilisé pour prédiction automatique de la consommation énergétique
+
+### 8. Interprétation des résultats
+Le modèle XGBoost optimisé parvient à reproduire les variations globales de la consommation énergétique des logements.
+Les prédictions suivent les tendances générales observées dans les données réelles.
+
+L’erreur moyenne (RMSE ≈ 32 000 kWh) indique une certaine variabilité résiduelle, principalement liée à la diversité des profils de bâtiments et aux incertitudes sur les données d’entrée.
+Le coefficient de détermination (R² ≈ 0.58) montre que le modèle capture une part significative de la variance de la consommation énergétique, bien qu’une proportion non négligeable reste inexpliquée.
+
+Les résultats suggèrent que le modèle appréhende correctement les facteurs structurels majeurs influençant la consommation (isolation, surface, type de chauffage, période de construction)
