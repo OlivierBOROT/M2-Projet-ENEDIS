@@ -15,13 +15,13 @@ DATA_PATH = here / "data/data.parquet"
 
 def server(input, output, session):
     df = pd.read_parquet(DATA_PATH)
-    
+
     # GENERAL
     @reactive.calc
     def dataset():
         """Retourne une copie du DataFrame principal pour usage réactif."""
-        return df.copy() 
-    
+        return df.copy()
+
     # Préparation des choix non réactifs pour la mise à jour de l'UI (DPE)
     choices_list = df['periode_construction'].unique().tolist()
     choices_list = [c for c in choices_list if pd.notna(c)]
@@ -30,14 +30,18 @@ def server(input, output, session):
 
     # ACCUEIL
     md = setup_accueil(session)
-    
+
     # CONTEXTE
     setup_donnees(input, output, session, dataset)
     setup_rapports(input, output, session)
 
     # VISUALISATION
+
+    # VISUALISATION : GRAPHS
     setup_graphs(input, output, session, dataset, dpe_choices)
-    setup_carto(input, output, session)
+
+    # VISUALISATION : CARTO
+    setup_carto(input, output, session, dataset)
 
     # PREDICTION
     # ...
