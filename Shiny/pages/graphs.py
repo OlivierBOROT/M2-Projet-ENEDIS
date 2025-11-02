@@ -42,11 +42,14 @@ def page():
         # CONTENU PRINCIPAL : KPI et Graphiques
         # ==================================
         ui.card_body(
-            # First row: 3 KPI cards (Vos KPI ici)
+            # First row: 3 KPI cards (DYNAMIQUES)
             ui.row(
-                ui.column(4, ui.div(ui.h3("KPI 1"), ui.h1("123"), class_="card p-3 text-center shadow")),
-                ui.column(4, ui.div(ui.h3("KPI 2"), ui.h1("456"), class_="card p-3 text-center shadow")),
-                ui.column(4, ui.div(ui.h3("KPI 3"), ui.h1("789"), class_="card p-3 text-center shadow")),
+                # KPI 1: Nombre de Logements
+                ui.column(4, ui.div(ui.h4("Nombre de Logements"), ui.output_ui("kpi1"), class_="card p-3 text-center shadow")),
+                # KPI 2: Consommation Moyenne
+                ui.column(4, ui.div(ui.h4("Conso Moyenne"), ui.output_ui("kpi2"), class_="card p-3 text-center shadow")),
+                # KPI 3: Note DPE Moyenne
+                ui.column(4, ui.div(ui.h4("Note DPE Moyenne"), ui.output_ui("kpi3"), class_="card p-3 text-center shadow")),
             ),
 
             # Second row: Graphique 1 et Graphique 2

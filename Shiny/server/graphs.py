@@ -3,6 +3,9 @@ import plotly.express as px
 from shiny import render, reactive, Session, ui 
 from shinywidgets import render_widget
 
+# Dictionnaire de conversion DPE (pour le calcul de la note moyenne)
+DPE_SCORE_MAP = {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5, "F": 6, "G": 7}
+
 # ----------------------------------------------------
 # Fonction de setup pour la page Graphs
 # ----------------------------------------------------
@@ -52,8 +55,11 @@ def setup_graphs(input, output, session: Session, dataset, dpe_choices, energie_
         df = data_filtered_energie()  
         
         # On exclut les valeurs manquantes sur les colonnes clés (pour le traçage)
-        df = df.dropna(subset=['etiquette_dpe', 'type_energie_principale_chauffage', 'surface_habitable_logement', 'type_batiment'])
+        df = df.dropna(subset=['etiquette_dpe', 'type_energie_principale_chauffage', 'surface_habitable_logement', 'type_batiment', 'conso_5_usages_ef'])
         
+        # Ajout de la colonne score DPE pour le calcul de la moyenne KPI
+        df['dpe_score'] = df['etiquette_dpe'].map(DPE_SCORE_MAP)
+
         return df
         
     # ----------------------------------------------------
@@ -71,14 +77,51 @@ def setup_graphs(input, output, session: Session, dataset, dpe_choices, energie_
         
         return df
 
+    # ====================================================
+    # LOGIQUE DES KPI DYNAMIQUES (Nombre, Conso, Note Moyenne)
+    # ====================================================
+    @output
+    @render.ui
+    def kpi1():
+        """KPI 1: Nombre de Logements"""
+        count = len(data_filtered_finale())
+        return ui.h1(str(count), style="font-size: 2.5rem;")
 
-    # ----------------------------------------------------
-    # GRAPHIQUE 1, 2, 3 (Utilisent data_filtered_finale)
-    # ----------------------------------------------------
+    @output
+    @render.ui
+    def kpi2():
+        """KPI 2: Consommation Moyenne"""
+        df = data_filtered_finale()
+        if df.empty:
+            return ui.h1("N/A", style="font-size: 2.5rem;")
+        
+        conso_moyenne = df['conso_5_usages_ef'].mean()
+        # Formatte avec une décimale et ajoute l'unité
+        return ui.h1(f"{conso_moyenne:,.1f}", style="font-size: 2.5rem;")
+
+    @output
+    @render.ui
+    def kpi3():
+        """KPI 3: Note DPE Moyenne (Conversion de 1 à 7)"""
+        df = data_filtered_finale()
+        if df.empty:
+            return ui.h1("N/A", style="font-size: 2.5rem;")
+        
+        score_moyen = df['dpe_score'].mean()
+        # Convertit le score moyen (ex: 3.5) en l'étiquette la plus proche (ex: D)
+        # Note la plus proche est (int(score_moyen + 0.5))
+        note_finale = next((k for k, v in DPE_SCORE_MAP.items() if v == round(score_moyen)), 'N/A')
+        
+        return ui.h1(f"{note_finale} ({score_moyen:,.2f})", style="font-size: 2.5rem;")
+    
+    # ====================================================
+    # LOGIQUE DES GRAPHIQUES (G1, G2, G3, G4)
+    # ====================================================
+
     @output
     @render_widget
     def graph1():
-        # Utilise la source de données finale (G1, G2, G3)
+        # ... (Logique G1 inchangée) ...
         df_local = data_filtered_finale() 
         if df_local.empty: return None 
         dpe_orders = ["A", "B", "C", "D", "E", "F", "G"]
@@ -91,7 +134,7 @@ def setup_graphs(input, output, session: Session, dataset, dpe_choices, energie_
     @output
     @render_widget
     def graph2():
-        # Utilise la source de données finale (G1, G2, G3)
+        # ... (Logique G2 inchangée) ...
         df_local = data_filtered_finale() 
         if df_local.empty: return None 
         dpe_orders = ["A", "B", "C", "D", "E", "F", "G"]
@@ -112,7 +155,7 @@ def setup_graphs(input, output, session: Session, dataset, dpe_choices, energie_
     @output
     @render_widget 
     def graph3():
-        # Utilise la source de données finale (G1, G2, G3)
+        # ... (Logique G3 inchangée) ...
         df_local = data_filtered_finale() 
         if df_local.empty: return None 
         df_counts = df_local['etiquette_dpe'].value_counts().reset_index()
@@ -139,10 +182,10 @@ def setup_graphs(input, output, session: Session, dataset, dpe_choices, energie_
         # Préparation de l'ordre des périodes (pour l'axe X)
         period_orders = [c for c in dpe_choices if c != "Toutes"]
         
-        # 1. Agrégation: Calcul de la surface moyenne par Période
+        # 1. Agrégation: Calcul de la surface moyenne par Période ET Type de Bâtiment
         df_grouped = (
             df
-            .groupby('periode_construction')['surface_habitable_logement']
+            .groupby(['periode_construction', 'type_batiment'])['surface_habitable_logement']
             .mean()
             .reset_index(name='surface_moyenne')
         )
@@ -155,21 +198,19 @@ def setup_graphs(input, output, session: Session, dataset, dpe_choices, energie_
             df_grouped,
             x='periode_construction', 
             y='surface_moyenne',
-            # Nous utilisons color='type_batiment' uniquement si nous avions plusieurs types par période,
-            # mais ici on veut une seule courbe pour le type filtré.
-            # On utilise donc un style plus simple.
-            title="Évolution de la Surface Moyenne par Période de Construction",
+            color='type_batiment', # Différencie les courbes par type de bâtiment (maison/appartement)
+            title="Évolution de la Surface Moyenne par Période de Construction et Type",
             labels={
                 'periode_construction': 'Période de Construction', 
-                'surface_moyenne': 'Surface Moyenne ($m^2$)'
+                'surface_moyenne': 'Surface Moyenne ($m^2$)',
+                'type_batiment': 'Type de Bâtiment'
             },
             template="plotly_white"
         )
         
-        # Ajout des marqueurs sur la courbe
         fig.update_traces(mode='lines+markers') 
-        # Assure l'ordre des catégories sur l'axe X
         fig.update_xaxes(categoryorder='array', categoryarray=period_orders)
+        fig.update_yaxes(title_text="Surface Moyenne ($m^2$)")
 
         return fig
 
