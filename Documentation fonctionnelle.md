@@ -6,6 +6,8 @@ Elle détaillera les différents onglets de l'application et leurs fonctionnalit
 
 ## Cartographie
 
+Naviguez sur notre carte afin de prendre connaissance de la répartition géographique de la consommation énergétique moyenne, du nombre de logements ou des zones considérées comme "à rénover".
+Pour cela vous pouvez sélectionner de visualiser ces informations par département, pour une vue plus globale du territoire, ou par code postal, afin de faire une analyse plus fine.
 
 ## Données
 
