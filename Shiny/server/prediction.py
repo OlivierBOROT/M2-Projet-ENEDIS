@@ -39,7 +39,6 @@ def setup_prediction(input, output, session, dataset):
             "model_name",
             "Choisir un modèle :",
             choices=MODEL_LIST,
-            selected=MODEL_LIST[0],
         )
 
     @reactive.effect
