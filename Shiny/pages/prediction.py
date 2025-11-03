@@ -4,32 +4,41 @@ def page():
     return ui.page_fluid(
         ui.h2("🏠 Questionnaire : Logement et Installations Énergétiques", class_="text-center mb-4"),
 
-        ui.layout_columns(
-            # --- Prediction type and model selection ---
-            ui.card(
-                ui.card_header("Prédiction"),
-                ui.layout_columns(
-                    ui.input_select("prediction_type", "Type de prédiction :", ["DPE", "CONSO"]),
-                    ui.input_select("selected_model", "Modèle :", choices=[], selected=None),
-                    col_widths=(3, 3)  # adjust as needed
-                ),
-                fill=True,
-            ),
-
-            # Card with the submit button
-            ui.card(
-                ui.card_header("Soumettre le formulaire"),
-                ui.layout_columns(
-                    ui.div(
-                        ui.input_action_button("submit", "Soumettre", class_="btn btn-primary"),
-                        style="display:flex; justify-content:center; align-items:center; height:100%;"
+        ui.row(
+            # Left card: Prediction
+            ui.column(
+                6,  # ensures column takes 6/12 of width
+                ui.card(
+                    ui.card_header("Prédiction"),
+                    ui.layout_columns(
+                        ui.input_select("prediction_type", "Type de prédiction :", ["DPE", "CONSO"]),
+                        ui.output_ui("selected_model"),
+                        col_widths=(6, 6),  # internal columns each take half of card
+                        style="align-items:center; width:100%;"
                     ),
-                ),
-                fill=True,
+                    fill=True,
+                    style="height: 100%;"
+                )
             ),
-            col_widths=(6, 6),
+            # Right card: Actions
+            ui.column(
+                6,  # ensures column takes 6/12 of width
+                ui.card(
+                    ui.card_header("Actions"),
+                    ui.layout_columns(
+                        ui.input_action_button("submit", "Prédire", class_="btn btn-primary"),
+                        ui.input_action_button("dl_model",
+                                               "Télécharger le modèle",
+                                               class_="btn btn-secondary"),
+                        col_widths=(6, 6),
+                        style="justify-content: space-between; align-items: center; width:100%;"
+                    ),
+                    fill=True,
+                    style="height: 100%;"
+                )
+            )
         ),
-
+        ui.hr(),
         # --- Inputs ---
         ui.layout_columns(
             ui.card(

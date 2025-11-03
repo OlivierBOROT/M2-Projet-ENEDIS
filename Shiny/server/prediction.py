@@ -1,9 +1,26 @@
 # server/prediction.py
 import re
 import httpx
+import requests
 from shiny import reactive, ui, render
 
-FASTAPI_URL = "http://127.0.0.1:8000/predict/"  # your FastAPI endpoint
+FASTAPI_URL = "https://m2-enedis-project-api.onrender.com/"
+FASTAPI_PREDICT_URL = FASTAPI_URL + "predict/"
+FASTAPI_MODEL_LIST_URL = FASTAPI_URL + "model_list/"
+FASTAPI_DOWNLOAD_MODEL_URL = FASTAPI_URL + "download_model/"
+
+try:
+    resp = requests.get(FASTAPI_MODEL_LIST_URL, timeout=10.0)
+    resp.raise_for_status()
+    data = resp.json()
+    if data.get("status") == "success":
+        MODEL_LIST = data.get("models", [])
+        print(MODEL_LIST)
+    else:
+        MODEL_LIST = []
+except Exception as e:
+    MODEL_LIST = []
+
 
 def setup_prediction(input, output, session, dataset):
 
@@ -15,7 +32,38 @@ def setup_prediction(input, output, session, dataset):
         data = dataset().copy()
         return data.loc[:, col].dropna().unique().tolist()
 
-    # --- Inputs dynamically rendered ---
+    @output
+    @render.ui
+    def selected_model():
+        return ui.input_select(
+            "model_name",
+            "Choisir un modèle :",
+            choices=MODEL_LIST,
+            selected=MODEL_LIST[0],
+        )
+
+    @reactive.effect
+    @reactive.event(input.dl_model)
+    async def _download_model():
+        model_name = input.model_name()
+        if not model_name:
+            return
+
+        download_url = f"{FASTAPI_DOWNLOAD_MODEL_URL}{model_name}"
+
+        modal = ui.modal(
+            "Download Model",
+            ui.div(
+                ui.p("Generating download link..."),
+                ui.HTML(f'<a href="{download_url}" target="_blank">Click here</a>')
+            ),
+            easy_close=True,
+            footer=None,
+            size="m"
+        )
+        ui.modal_show(modal)
+
+        
     @output
     @render.ui
     def type_batiment_ui():
@@ -112,31 +160,72 @@ def setup_prediction(input, output, session, dataset):
     # --- FIN INPUTS ---
     # ==================
 
-    def show_results_modal(results_text: str):
-        """Return a modal UI showing the results text."""
+    def show_results_modal(result_json):
+        # Map DPE numeric to letters
+        DPE_MAPPING = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G"}
+
+        # Determine status color
+        status_color = "green" if result_json.get("status") == "success" else "red"
+
+        if result_json.get("status") != "success":
+            return ui.modal(
+                "Prediction Error",
+                ui.p(str(result_json.get("message", "Unknown error")), style=f"color: {status_color}; font-weight: bold;"),
+                easy_close=True,
+                footer=None
+            )
+
+        # Pretty display for successful prediction
+        prediction_type = result_json.get("prediction_type")
+        prediction_val = result_json.get("prediction")
+
+        # Adapt value for DPE
+        if prediction_type == "DPE":
+            prediction_val = DPE_MAPPING.get(int(prediction_val), prediction_val)
+        else:
+            # Format numeric prediction for CONSO
+            try:
+                prediction_val = f"{float(prediction_val):,.2f}"
+            except Exception:
+                pass
+
+        # Build list items dynamically, skipping None values
+        info_items = [
+            ("Prediction Type", prediction_type),
+            ("Model Used", result_json.get("model_used")),
+            ("Predicted Value", prediction_val)
+        ]
+        info_list = [ui.tags.li(f"{name}: {val}") for name, val in info_items if val is not None]
+
         return ui.modal(
-            ui.h3("✅ Résultats du questionnaire"),
-            ui.pre(results_text, class_="bg-light p-3 rounded border"),
+            "Prediction Results",
+            ui.div(
+                ui.h4("Prediction Summary", style="margin-bottom: 10px;"),
+                ui.tags.ul(*info_list, style="font-size: 16px; line-height: 1.5;")
+            ),
             easy_close=True,
-            footer=ui.modal_button("Fermer"),
-            size="l"
+            footer=None,
+            size="m"
         )
 
     @reactive.effect
     @reactive.event(input.submit)
     async def _():
         """Handle form submission asynchronously."""
+        isolation_toiture_value = input.isolation_toiture()
+        if isinstance(isolation_toiture_value, str):
+            isolation_toiture_value = 1 if isolation_toiture_value.lower() == "oui" else 0
         payload = {
             # Votre logement (1/2)
             "type_batiment": input.type_batiment(),
             "surface_habitable_logement": input.surface_habitable_logement(),
             "nombre_niveau_logement": input.nombre_niveau_logement(),
             "periode_construction": input.periode_construction(),
-            "code_postal_ban": input.code_postal_ban() if input.prediction_type() == "CONSO" else None,
+            "code_postal_ban": input.code_postal_ban() if input.prediction_type() == "CONSO" else 0,
 
             # Votre logement (2/2)
             "hauteur_sous_plafond": input.hauteur_sous_plafond(),
-            "isolation_toiture": input.isolation_toiture(),
+            "isolation_toiture": isolation_toiture_value,
             "qualite_isolation_plancher_bas": input.qualite_isolation_plancher_bas(),
             "qualite_isolation_murs": input.qualite_isolation_murs(),
 
@@ -146,12 +235,21 @@ def setup_prediction(input, output, session, dataset):
             "type_installation_ecs": input.type_installation_ecs(),
             "type_generateur_n1_ecs_n1": input.type_generateur_n1_ecs_n1(),
             "type_generateur_chauffage_principal": input.type_generateur_chauffage_principal(),
+
+            "model_name": input.model_name()
         }
 
 
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
-                response = await client.post(FASTAPI_URL, json=payload)
+                response = await client.post(
+                    FASTAPI_PREDICT_URL,
+                    json=payload,
+                    params={
+                    "prediction_type": input.prediction_type(),
+                    "model_name": input.model_name(),
+                    }
+                    )
                 response.raise_for_status()
                 result_json = response.json()
         except Exception as e:
