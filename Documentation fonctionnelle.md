@@ -18,10 +18,13 @@ Vous pourrez ainsi prendre connaissance du processus d'extraction et de traiteme
 
 ## Prédiction
 
-Cette page vous permet de prédire, en fonction des caractéristiques de votre logement, l'étiquette du DPE, ainsi qu'une estimation des besoins en consommation énergétique de votre logement.
-Pour cela, remplissez simplement le formulaire et appuyez sur "Soumettre".
+Cette page vous permet de réaliser deux prédictions : l'étiquette DPE de votre logement et une estimation des besoins en consommation énergétique de celui-ci.
+Pour cela, quelques étapes :
+* sélectionnez l'élément que vous souhaitez prédire(DPE ou consommation énergétique)
+* remplissez le formulaire concernant les caractéristiques de votre logement
+*  appuyez sur "Soumettre".
+*  
 Quelques précisions sur les champs relatifs à l'isolation de votre plancher et de vos murs : 
-
 
 Concernant l'isolation de votre plancher, une **"très bonne"** isolation correspond à la présence d'un autre logement ou d'un espace chauffé sous le vôtre; une **"bonne"** isolation correspond à la présence d'un sous-sol isolé ou d'un vide sanitaire sous le plancher de votre logement ; 
 une isolation **"moyenne"** correspond à la présence d'un sous-sol ou vide sanitaire non isolé; et enfin une isolation **"insuffisante"** correspond au cas de figure où votre logement est construit en terre-plein.
