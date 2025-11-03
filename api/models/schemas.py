@@ -1,35 +1,24 @@
-# api/models/schema.py
 from pydantic import BaseModel
-from typing import Optional
-
-# api/models/schemas.py
-from pydantic import BaseModel
-from typing import Optional
+from typing import Union
 
 class PredictionRequest(BaseModel):
-    # Logement
-    type_logement: str
-    surface: float
-    code_postal: Optional[str] = None  # only needed for CONSO
-    annee_construction: str
-    nombre_niveau_logement: int
-    hauteur_sous_plafond: float
-    isolation_toiture: str
-    isolation_plancher: str
     qualite_isolation_murs: str
-
-    # Installations énergétiques
-    type_chauffage: str
-    energie_chauffage: str
-    type_ecs: str
-    type_generateur_chauffage: str
-    type_generateur_ecs: str
-
+    type_batiment: str
+    type_installation_ecs: str
+    type_energie_principale_chauffage: str
+    qualite_isolation_plancher_bas: str
+    type_installation_chauffage: str
+    surface_habitable_logement: float
+    hauteur_sous_plafond: float
+    nombre_niveau_logement: float
+    isolation_toiture: int
+    type_generateur_n1_ecs_n1: str
+    type_generateur_chauffage_principal: str
+    periode_construction: str
+    code_postal_ban: int
 
 class PredictionResponse(BaseModel):
     status: str
-    data: dict
-
-class ModelUploadResponse(BaseModel):
-    status: str
-    message: str
+    prediction_type: str
+    model_used: str
+    prediction: Union[str, float]

@@ -15,50 +15,45 @@ DEFAULT_MODELS = {
     "DPE": "DPE_model.pkl",
     "CONSO": "CONSO_model.pkl"
 }
+def preprocess_input(data: PredictionRequest, prediction_type="DPE"):
+    df = pd.DataFrame([data.dict()])
 
-# Example: DPE model features (one-hot columns)
-# Replace these with the exact columns from your trained model X.columns
-DPE_FEATURES = [
-    "surface_habitable_logement", "hauteur_sous_plafond", "nombre_niveau_logement",
-    "qualite_isolation_murs_Très bonne", "qualite_isolation_murs_Bonne", "qualite_isolation_murs_Moyenne",
-    "qualite_isolation_plancher_bas_Très bonne", "qualite_isolation_plancher_bas_Bonne", "qualite_isolation_plancher_bas_Moyenne",
-    "isolation_toiture_Oui",
-    "type_batiment_maison",
-    "type_installation_ecs_individuel",
-    "type_installation_chauffage_individuel",
-    "type_energie_principale_chauffage_Électricité",
-    "type_generateur_n1_ecs_n1_boiler",
-    "type_generateur_chauffage_principal_gaz",
-    "periode_construction_Avant 1960",
-    "periode_construction_1961-1970",
-    "periode_construction_1971-1980",
-    "periode_construction_1981-1990",
-    "periode_construction_1991-2000",
-    "periode_construction_2001-2010",
-    "periode_construction_Après 2010"
-]
+    # Fill missing values
+    for col in df.columns:
+        if df[col].dtype in ["float64","int64"]:
+            df[col] = df[col].fillna(df[col].mean())
+        else:
+            df[col] = df[col].fillna("non spécifié")
 
-# Example: CONSO numeric features
-CONSO_FEATURES = [
-    "surface_habitable_logement", "hauteur_sous_plafond", "nombre_niveau_logement",
-    "qualite_isolation_murs", "qualite_isolation_plancher_bas",
-    "type_batiment", "type_installation_ecs", "type_installation_chauffage",
-    "type_energie_principale_chauffage", "type_generateur_n1_ecs_n1",
-    "type_generateur_chauffage_principal", "isolation_toiture",
-    "periode_construction", "code_postal_ban"
-]
+    # Categorical columns for one-hot encoding
+    if prediction_type=="DPE":
+        categorical_cols = [
+            'qualite_isolation_murs',
+            'type_batiment',
+            'type_installation_ecs',
+            'type_energie_principale_chauffage',
+            'qualite_isolation_plancher_bas',
+            'type_installation_chauffage',
+            'type_generateur_n1_ecs_n1',
+            'type_generateur_chauffage_principal',
+            'periode_construction'
+        ]
+    else:  # CONSO
+        categorical_cols = [
+            'qualite_isolation_murs',
+            'type_batiment',
+            'type_installation_ecs',
+            'type_energie_principale_chauffage',
+            'qualite_isolation_plancher_bas',
+            'type_installation_chauffage',
+            'type_generateur_n1_ecs_n1',
+            'type_generateur_chauffage_principal',
+            'periode_construction',
+            'code_postal_ban'
+        ]
 
-# Ordinal mappings
-ISOLATION_MAP = {"Très bonne":3, "Bonne":2, "Moyenne":1, "Insuffisante":0}
-TOITURE_MAP = {"Oui":1, "Non":0}
-TYPE_LOGEMENT_MAP = {"Maison":1, "Appartement":0}
-YES_NO_MAP = {"Oui":1, "Non":0}
-
-# Periode construction mapping
-PERIODE_MAP = {
-    "Avant 1960":0, "1961-1970":1, "1971-1980":2, "1981-1990":3,
-    "1991-2000":4, "2001-2010":5, "Après 2010":6
-}
+    df_encoded = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+    return df_encoded
 
 @router.post("/", response_model=PredictionResponse)
 async def predict(
@@ -86,83 +81,16 @@ async def predict(
     model_path = os.path.join(settings.LOCAL_MODEL_DIR, model_name)
     if not os.path.exists(model_path):
         raise HTTPException(status_code=404, detail=f"Model '{model_name}' not found")
-    ext = os.path.splitext(model_path)[1].lower()
     try:
-        if ext == ".pkl":
-            with open(model_path, "rb") as f:
-                model = pickle.load(f)
-        elif ext == ".joblib":
-            model = joblib.load(model_path)
-        else:
-            raise HTTPException(status_code=400, detail=f"Unsupported model format: {ext}")
+        with open(model_path, "rb") as f:
+            model = joblib.load(f)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to load model: {str(e)}")
 
-    # ---------------------
-    # Build input vector
-    # ---------------------
-    if prediction_type == "DPE":
-        # One-hot encoded for DPE
-        input_dict = {}
-
-        # Numeric
-        input_dict["surface_habitable_logement"] = data.surface
-        input_dict["hauteur_sous_plafond"] = data.hauteur_sous_plafond
-        input_dict["nombre_niveau_logement"] = data.nombre_niveau_logement
-
-        # Isolation murs
-        for val in ["Très bonne", "Bonne", "Moyenne"]:
-            input_dict[f"qualite_isolation_murs_{val}"] = 1 if data.qualite_isolation_murs==val else 0
-
-        # Isolation plancher
-        for val in ["Très bonne", "Bonne", "Moyenne"]:
-            input_dict[f"qualite_isolation_plancher_bas_{val}"] = 1 if data.isolation_plancher==val else 0
-
-        # Isolation toiture
-        input_dict["isolation_toiture_Oui"] = 1 if data.isolation_toiture=="Oui" else 0
-
-        # Type logement
-        input_dict["type_batiment_maison"] = 1 if data.type_logement=="Maison" else 0
-
-        # Installation ECS
-        input_dict["type_installation_ecs_individuel"] = 1 if data.type_ecs=="Individuel" else 0
-
-        # Installation chauffage
-        input_dict["type_installation_chauffage_individuel"] = 1 if data.type_chauffage=="Individuel" else 0
-
-        # Energie principale
-        input_dict["type_energie_principale_chauffage_Électricité"] = 1 if data.energie_chauffage=="Électricité" else 0
-
-        # Generateur ECS principal (example mapping)
-        input_dict["type_generateur_n1_ecs_n1_boiler"] = 1 if "boiler" in data.type_generateur_ecs.lower() else 0
-
-        # Generateur chauffage principal (example mapping)
-        input_dict["type_generateur_chauffage_principal_gaz"] = 1 if "gaz" in data.type_generateur_chauffage.lower() else 0
-
-        # Periode construction
-        for val in ["Avant 1960","1961-1970","1971-1980","1981-1990","1991-2000","2001-2010","Après 2010"]:
-            input_dict[f"periode_construction_{val}"] = 1 if data.annee_construction==val else 0
-
-        df_input = pd.DataFrame([input_dict], columns=DPE_FEATURES)
-
-    else:
-        # CONSO numeric features
-        df_input = pd.DataFrame([{
-            "surface_habitable_logement": data.surface,
-            "hauteur_sous_plafond": data.hauteur_sous_plafond,
-            "nombre_niveau_logement": data.nombre_niveau_logement,
-            "qualite_isolation_murs": ISOLATION_MAP.get(data.qualite_isolation_murs,0),
-            "qualite_isolation_plancher_bas": ISOLATION_MAP.get(data.isolation_plancher,0),
-            "type_batiment": TYPE_LOGEMENT_MAP.get(data.type_logement,0),
-            "type_installation_ecs": 1 if data.type_ecs=="Individuel" else 0,
-            "type_installation_chauffage": 1 if data.type_chauffage=="Individuel" else 0,
-            "type_energie_principale_chauffage": 1 if data.energie_chauffage=="Électricité" else 0,
-            "type_generateur_n1_ecs_n1": 1 if "boiler" in data.type_generateur_ecs.lower() else 0,
-            "type_generateur_chauffage_principal": 1 if "gaz" in data.type_generateur_chauffage.lower() else 0,
-            "isolation_toiture": TOITURE_MAP.get(data.isolation_toiture,0),
-            "periode_construction": PERIODE_MAP.get(data.annee_construction,0),
-            "code_postal_ban": str(data.code_postal) if hasattr(data,"code_postal") else 0
-        }], columns=CONSO_FEATURES)
+    # -----------------------
+    # Preprocess input
+    # -----------------------
+    df_input = preprocess_input(data, prediction_type)
 
     # ---------------------
     # Fill missing columns if model expects them
