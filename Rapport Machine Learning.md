@@ -248,4 +248,3 @@ L’erreur moyenne (RMSE ≈ 32 000 kWh) indique une certaine variabilité rési
 Le coefficient de détermination (R² ≈ 0.58) montre que le modèle capture une part significative de la variance de la consommation énergétique, bien qu’une proportion non négligeable reste inexpliquée.
 
 Les résultats suggèrent que le modèle appréhende correctement les facteurs structurels majeurs influençant la consommation (isolation, surface, type de chauffage, période de construction)
-
