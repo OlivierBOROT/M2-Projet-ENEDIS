@@ -9,7 +9,7 @@ from server.accueil import setup_accueil
 from server.donnees import setup_donnees
 from server.cartographie import setup_carto
 from server.graphs import setup_graphs
-
+from server.prediction import setup_prediction
 here = Path(__file__).parent
 DATA_PATH = here / "data/data.parquet"
 
@@ -60,3 +60,4 @@ def server(input, output, session):
     setup_carto(input, output, session, dataset)
 
     # PREDICTION
+    setup_prediction(input, output, session, dataset)
