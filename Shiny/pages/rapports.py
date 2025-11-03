@@ -10,9 +10,10 @@ def page():
                         "rapport_select",
                         "Choisir un rapport",
                         choices={
+                            "general": "Rapport général",
                             "technique": "Rapport technique",
                             "utilisateur": "Rapport utilisateur",
-                            "general": "Rapport général"
+                            "machine_learning":"Rapport machine learning",
                         },
                         inline=True,
                     )

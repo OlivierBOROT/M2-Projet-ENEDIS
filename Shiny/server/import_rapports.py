@@ -3,9 +3,10 @@ from shiny import reactive, render, ui
 import markdown
 
 rapports = {
-    "technique": "https://raw.githubusercontent.com/posit-dev/py-shiny/refs/heads/main/README.md",
-    "utilisateur": "",
-    "general": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/extraction_donnees/Rapport%20Machine%20Learning.md"
+    "general": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/Rapport%20g%C3%A9n%C3%A9ral.md",
+    "technique": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/Documentation%20technique.md",
+    "utilisateur": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/Documentation%20fonctionnelle.md",
+    "machine_learning": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/extraction_donnees/Rapport%20Machine%20Learning.md"
 }
 
 cache = {}
