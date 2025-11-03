@@ -1,8 +1,9 @@
 # api/routes/model_download.py
 
 import os
-import boto3
 import tempfile
+import boto3
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
