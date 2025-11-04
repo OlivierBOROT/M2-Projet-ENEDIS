@@ -3,17 +3,97 @@
 
 / petite introduction /
 
+## 0. Lancer le projet
+Lancement de l'application Shiny M2 - 3 méthodes
+
+#### 1. Avec Docker
+   - Prérequis : Docker installé et lancé.
+   - Télécharger l'image :
+     ```bash
+     docker pull boroto/shiny-app-m2:latest
+     ```
+   - Lancer le container :
+     ```bash
+     docker run -p 8000:8000 boroto/shiny-app-m2:latest
+     ```
+     Option alternative avec nommage du container :
+     ```bash
+     docker run -p 8000:8000 --name shiny-m2 shiny-app-m2-dpe
+     ```
+   - Arrêter et relancer le container si besoin :
+     ```bash
+     docker stop shiny-m2
+     docker start shiny-m2
+     ```
+
+#### 2. En ligne
+   - Accéder à l'application via navigateur ou [ici](https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/) :
+     https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/
+   - Cliquer sur le lien, attendre que l'API se remette en route (maximum une minute), et profitez de l'application !
+
+#### 3. En local
+   - Cloner le repository :
+     ```bash
+     git clone https://github.com/OlivierBOROT/M2-Projet-ENEDIS/tree/main/Shiny
+     cd Shiny
+     ```
+   - Créer un environnement virtuel :
+     ```bash
+     py -m venv nom_de_l_env
+     ```
+   - Installer les dépendances :
+     ```bash
+     pip install -r requirements.txt
+     ```
+   - Lancer l'application :
+     - Sur VSCode : ouvrir `app.py` et cliquer sur **Run**.
+     - Via terminal :
+       ```bash
+       py app.py
+       ```
+
 ## 1. Architecture de l’application
 
-L’application est composée de plusieurs modules Python répartis comme suit :
+L’application, disponible [ici](https://github.com/OlivierBOROT/M2-Projet-ENEDIS), est composée de plusieurs modules Python répartis comme suit :
 
-
-## Arborescence (extraite du dépôt)
-
-Voici l'organisation du projet tel que sur le [repo github](https://github.com/OlivierBOROT/M2-Projet-ENEDIS):
-
-
+```
 Architecture du projet                                   Description
+===================================================================================================
+M2-Projet-ENEDIS/
+├── api/                                                 # Répertoire de l'Api FastAPI
+├── Shiny/                                               # Répertoire de l'application Shiny
+├── ml_donnees_finales/                                  # Répertoires des différents notebook de création de modèle
+├── extraction_donnees/                                  # Répertoire du notebook d'extraction des données brutes
+├── Documentation fonctionnelle.md                       # Documentation utilisateur
+├── Documentation technique.md                           # Documentation technique
+├── Rapport Machine Learning.md                          # Documentation générale
+├── README.md                                            # Readme
+└── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
+```
+note : un schéma bien plus détaillé de l'architecture des données vous attend en bas de ce rapport ([cliquez ici](#schéma-détaillé-de-larchitecture-du-projet)).
+
+## 2. Schémas de l'application
+- [Schéma 1 : schéma d'interactions du projet](#schéma-1--schéma-dinteractions-du-projet)
+- [Schéma 2 : schéma de l'architecture de l'application Shiny](#schéma-2--schéma-de-larchitecture-de-lapplication-shiny)
+- [Schéma 3 : schéma de l'architecture de l'API](#schéma-3--schéma-de-larchitecture-de-lapi)
+
+#### Schéma 1 : schéma d'interactions du projet
+*ajouter le schéma ici*  
+
+#### Schéma 2 : schéma de l'architecture de l'application Shiny
+*ajouter le schéma ici*  
+
+#### Schéma 3 : schéma de l'architecture de l'API
+*ajouter le schéma ici*  
+
+
+
+## Annexes
+
+[Aller au schéma détaillé](#schéma-détaillé-de-larchitecture-du-projet)
+
+```
+Architecture du projet (détaillé)                        # Description
 ===================================================================================================
 M2-Projet-ENEDIS/
 ├── api/                                                 # Répertoire de l'Api FastAPI
@@ -52,27 +132,4 @@ M2-Projet-ENEDIS/
 ├── Rapport Machine Learning.md                          # Documentation générale
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
-
-
-
-M2‑Projet‑ENEDIS/
-│
-├─ Shiny/ # Application Shiny (front‑end & UI)
-│ ├─ app.py # Point d’entrée de l’application Shiny
-│ ├─ ui/ # Fichiers UI (layout, composants Shiny)
-│ └─ server/ # Logique serveur Shiny
-├─ api/ # API REST (backend)
-│ ├─ main.py # Lancement de l’API via FastAPI
-│ ├─ routes.py # Définition des endpoints REST
-│ └─ utils.py # Fonctions utilitaires pour l’API
-├─ extraction_donnees/ # Pipeline d’extraction des données brutes
-├─ ml_donnees_finales/ # Modèles, données finales prêtes à être utilisées
-├─ requirements.txt # Liste de toutes les dépendances Python
-├─ README.md # Présentation du projet et instructions d’installation
-└─ Documentation technique.md # Ce document
-/ schéma de l'architecture du code /
-- comment l'appli shiny parle avec les autres
-- comment 
-
-/ presentation vite fait des requirements /
-
+```
