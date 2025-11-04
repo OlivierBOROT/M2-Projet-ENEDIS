@@ -103,16 +103,16 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 
 | Technologie | Logo | Description | Lien officiel |
 |------------|------|------------|---------------|
-| Python | ![Python](https://www.python.org/static/community_logos/python-logo.png) | Langage principal utilisé pour le backend, scripts de data, API et Shiny. | [python.org](https://www.python.org/) |
-| FastAPI | ![FastAPI](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png) | Framework Python moderne pour créer l'API REST. | [fastapi.tiangolo.com](https://fastapi.tiangolo.com/) |
-| Shiny for Python | ![Shiny](https://shiny.posit.co/images/shiny-logo.png) | Framework pour construire l'interface web interactive. | [posit.co/shiny](https://shiny.posit.co/) |
-| Docker | ![Docker](https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png) | Conteneurisation pour exécuter l’application sur n’importe quel système. | [docker.com](https://www.docker.com/) |
-| Pandas | ![Pandas](https://pandas.pydata.org/static/img/pandas_white.svg) | Manipulation et analyse des données. | [pandas.pydata.org](https://pandas.pydata.org/) |
-| NumPy | ![NumPy](https://numpy.org/images/logo.svg) | Calcul scientifique et gestion des tableaux numériques. | [numpy.org](https://numpy.org/) |
-| Plotly | ![Plotly](https://images.plot.ly/logo/new-branding/plotly-logomark.png) | Visualisations interactives et graphiques. | [plotly.com](https://plotly.com/) |
-| Folium | ![Folium](https://python-visualization.github.io/folium/_images/folium_logo.png) | Création de cartes interactives. | [python-visualization.github.io/folium](https://python-visualization.github.io/folium/) |
-| scikit-learn | ![Scikit-learn](https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png) | Bibliothèque de machine learning. | [scikit-learn.org](https://scikit-learn.org/) |
-| Jupyter Notebook | ![Jupyter](https://jupyter.org/assets/homepage/main-logo.svg) | Notebook interactif pour exploration et analyses de données. | [jupyter.org](https://jupyter.org/) |
+| Python | ![Python](https://www.python.org/static/community_logos/python-logo.png width="60" height="60") | Langage principal utilisé pour le backend, scripts de data, API et Shiny. | [python.org](https://www.python.org/ width="60" height="60") |
+| FastAPI | ![FastAPI](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png width="60" height="60") | Framework Python moderne pour créer l'API REST. | [fastapi.tiangolo.com](https://fastapi.tiangolo.com/ width="60" height="60") |
+| Shiny for Python | ![Shiny](https://shiny.posit.co/images/shiny-solo.png width="60" height="60") | Framework pour construire l'interface web interactive. | [posit.co/shiny](https://shiny.posit.co/ width="60" height="60") |
+| Docker | ![Docker](https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Docker_Logo.svg/500px-Docker_Logo.svg.png width="60" height="60") | Conteneurisation pour exécuter l’application sur n’importe quel système. | [docker.com](https://www.docker.com/ width="60" height="60") |
+| Pandas | ![Pandas](https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/langfr-330px-Pandas_logo.svg.png width="60" height="60") | Manipulation et analyse des données. | [pandas.pydata.org](https://pandas.pydata.org/ width="60" height="60") |
+| NumPy | ![NumPy](https://numpy.org/images/logo.svg width="60" height="60") | Calcul scientifique et gestion des tableaux numériques. | [numpy.org](https://numpy.org/ width="60" height="60") |
+| Plotly | ![Plotly](https://images.plot.ly/logo/new-branding/plotly-logomark.png width="60" height="60") | Visualisations interactives et graphiques. | [plotly.com](https://plotly.com/ width="60" height="60") |
+| Folium | ![Folium](https://python-visualization.github.io/folium/latest/_images/folium_logo.png width="60" height="60") | Création de cartes interactives. | [python-visualization.github.io/folium](https://python-visualization.github.io/folium/ width="60" height="60") |
+| scikit-learn | ![Scikit-learn](https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png width="60" height="60") | Bibliothèque de machine learning. | [scikit-learn.org](https://scikit-learn.org/ width="60" height="60") |
+| Jupyter Notebook | ![Jupyter](https://jupyter.org/assets/homepage/main-logo.svg width="60" height="60") | Notebook interactif pour exploration et analyses de données. | [jupyter.org](https://jupyter.org/ width="60" height="60") |
 
 
 ## Annexes
