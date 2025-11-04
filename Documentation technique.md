@@ -12,7 +12,7 @@ L’application est composée de plusieurs modules Python répartis comme suit :
 
 Voici l'organisation du projet tel que sur le [repo github](https://github.com/OlivierBOROT/M2-Projet-ENEDIS):
 
-```
+
 Architecture du projet                                   Description
 ===================================================================================================
 M2-Projet-ENEDIS/
@@ -52,7 +52,7 @@ M2-Projet-ENEDIS/
 ├── Rapport Machine Learning.md                          # Documentation générale
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
-```
+
 
 
 M2‑Projet‑ENEDIS/
