@@ -1,12 +1,23 @@
 
 # Documentation technique – Projet ENEDIS Machine learning 2025
 
-/ petite introduction /
+Ce document technique contient les différentes méthodes pour démarrer l'application ainsi que les schémas permettant de comprendre plus facilement son architecture.  
+Plan du document :
+- [Démarrer l'application](#0-démarrer-lapplication)
+    - [Avec docker](#docker)
+    - [en ligne](#en_ligne)
+    - [en local](#local)
+- Architecture de l'application
+- Schémas de l'application
+    - [Schéma 1 : schéma d'interactions du projet](#schema_1)
+    - [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
+    - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
 
-## 0. Lancer le projet
-Lancement de l'application Shiny M2 - 3 méthodes
+## 0. Démarrer l'application <a name="demarr_app"></a>
 
-#### 1. Avec Docker
+Pour lancer l'application, vous avez le choix entre 3 méthodes :
+
+#### 1. Avec Docker <a name="docker"></a>
    - Prérequis : Docker installé et lancé.
    - Télécharger l'image :
      ```bash
@@ -26,12 +37,12 @@ Lancement de l'application Shiny M2 - 3 méthodes
      docker start shiny-m2
      ```
 
-#### 2. En ligne
+#### 2. En ligne <a name="en_ligne"></a>
    - Accéder à l'application via navigateur en copiant le lien suivant ou [ici](https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/) :
      https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/
    - Cliquer sur le lien, attendre que l'API se remette en route (maximum une minute), et profitez de l'application !
 
-#### 3. En local
+#### 3. En local <a name="local"></a>
    - Cloner le repository :
      ```bash
      git clone https://github.com/OlivierBOROT/M2-Projet-ENEDIS/tree/main/Shiny
@@ -60,7 +71,7 @@ L’application, disponible sur github [ici](https://github.com/OlivierBOROT/M2-
 Architecture du projet                                   Description
 ===================================================================================================
 M2-Projet-ENEDIS/
-├── api/                                                 # Répertoire de l'Api FastAPI
+├── api/                                                 # Répertoire de l'api FastAPI
 ├── Shiny/                                               # Répertoire de l'application Shiny
 ├── ml_donnees_finales/                                  # Répertoires des différents notebook de création de modèle
 ├── extraction_donnees/                                  # Répertoire du notebook d'extraction des données brutes
@@ -78,7 +89,7 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
 
 #### Schéma 1 : schéma d'interactions du projet <a name="schema_1"></a>
-*ajouter le schéma ici*  
+![Alt text](https://assets.digitalocean.com/articles/alligator/boo.svg "a title")
 
 #### Schéma 2 : schéma de l'architecture de l'application Shiny <a name="schema_2"></a>
 *ajouter le schéma ici*  
