@@ -10,7 +10,6 @@ Plan du document :
 - [Architecture de l'application](#archi_app)
 - [Schémas de l'application](#schema_app)
     - [Schéma 1 : schéma d'interactions du projet](#schema_1)
-    - [Schéma 2 : schéma de l'architecture de l'application](#schema_2)
 - [technologies utilisées](#techno)
 
 ## 0. Démarrer l'application <a name="demarr_app"></a>
@@ -85,13 +84,11 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 
 ## 2. Schémas de l'application <a name="schema_app"></a>
 - [Schéma 1 : schéma d'interactions du projet](#schema_1)
-- [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
 
 #### Schéma 1 : schéma d'interactions du projet <a name="schema_1"></a>
 ![schéma impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis.png)
 
-#### Schéma 2 : schéma de l'architecture de l'application<a name="schema_2"></a>
-![schéma impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis_detaille.png)
+note : une version plus détaillé de ce schéma est disponible en annexe [ici](#schema_1_detail) :
 
 
 ## Technologies utilisées <a name="techno"></a>
@@ -155,3 +152,8 @@ M2-Projet-ENEDIS/
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
 ```
+
+<a name="schema_1_detail"></a>
+schéma d'interactions du projet (détaillé)
+
+![schéma impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis_detaille.png)
