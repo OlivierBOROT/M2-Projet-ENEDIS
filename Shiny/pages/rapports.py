@@ -10,7 +10,7 @@ def page():
                         "rapport_select",
                         "Choisir un rapport",
                         choices={
-                            "general": "Rapport général",
+                            "general": "Readme",
                             "technique": "Rapport technique",
                             "utilisateur": "Rapport utilisateur",
                             "machine_learning":"Rapport machine learning",
