@@ -103,7 +103,7 @@ M2-Projet-ENEDIS/
 
 
 ## License:
-license MIT classique voir license : (lien license)
+license MIT classique voir license : [lien](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/LICENSE)
 
 --- 
 ---
@@ -211,4 +211,4 @@ M2-Projet-ENEDIS/
 
 
 ## License:
-license MIT classique voir license : (lien license)
+license MIT classique voir license : [link](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/LICENSE)
