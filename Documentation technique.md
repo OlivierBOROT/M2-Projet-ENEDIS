@@ -27,7 +27,7 @@ Lancement de l'application Shiny M2 - 3 méthodes
      ```
 
 #### 2. En ligne
-   - Accéder à l'application via navigateur ou [ici](https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/) :
+   - Accéder à l'application via navigateur en copiant le lien suivant ou [ici](https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/) :
      https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/
    - Cliquer sur le lien, attendre que l'API se remette en route (maximum une minute), et profitez de l'application !
 
@@ -54,7 +54,7 @@ Lancement de l'application Shiny M2 - 3 méthodes
 
 ## 1. Architecture de l’application
 
-L’application, disponible [ici](https://github.com/OlivierBOROT/M2-Projet-ENEDIS), est composée de plusieurs modules Python répartis comme suit :
+L’application, disponible sur github [ici](https://github.com/OlivierBOROT/M2-Projet-ENEDIS), est composée de plusieurs modules Python répartis comme suit :
 
 ```
 Architecture du projet                                   Description
@@ -70,7 +70,7 @@ M2-Projet-ENEDIS/
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
 ```
-note : un schéma bien plus détaillé de l'architecture des données vous attend en bas de ce rapport ([cliquez ici](#schéma-détaillé-de-larchitecture-du-projet)).
+note : un schéma bien plus détaillé de l'architecture des données vous attend en bas de ce rapport ([cliquez ici](#schema_detaille)).
 
 ## 2. Schémas de l'application
 - [Schéma 1 : schéma d'interactions du projet](#schéma-1--schéma-dinteractions-du-projet)
@@ -90,7 +90,7 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 
 ## Annexes
 
-[Aller au schéma détaillé](#schéma-détaillé-de-larchitecture-du-projet)
+<a name="schema_detaille">schéma détaillé</a>
 
 ```
 Architecture du projet (détaillé)                        # Description
