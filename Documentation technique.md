@@ -73,24 +73,25 @@ M2-Projet-ENEDIS/
 note : un schéma bien plus détaillé de l'architecture des données vous attend en bas de ce rapport ([cliquez ici](#schema_detaille)).
 
 ## 2. Schémas de l'application
-- [Schéma 1 : schéma d'interactions du projet](#schéma-1--schéma-dinteractions-du-projet)
-- [Schéma 2 : schéma de l'architecture de l'application Shiny](#schéma-2--schéma-de-larchitecture-de-lapplication-shiny)
-- [Schéma 3 : schéma de l'architecture de l'API](#schéma-3--schéma-de-larchitecture-de-lapi)
+- [Schéma 1 : schéma d'interactions du projet](#schema_1)
+- [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
+- [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
 
-#### Schéma 1 : schéma d'interactions du projet
+#### Schéma 1 : schéma d'interactions du projet <a name="schema_1"></a>
 *ajouter le schéma ici*  
 
-#### Schéma 2 : schéma de l'architecture de l'application Shiny
+#### Schéma 2 : schéma de l'architecture de l'application Shiny <a name="schema_2"></a>
 *ajouter le schéma ici*  
 
-#### Schéma 3 : schéma de l'architecture de l'API
+#### Schéma 3 : schéma de l'architecture de l'API <a name="schema_3"></a>
 *ajouter le schéma ici*  
 
 
 
 ## Annexes
 
-<a name="schema_detaille">schéma détaillé</a>
+<a name="schema_detaille"></a>
+schéma détaillé
 
 ```
 Architecture du projet (détaillé)                        # Description
