@@ -3,7 +3,7 @@ from shiny import reactive, render, ui
 import markdown
 
 rapports = {
-    "general": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/Rapport%20g%C3%A9n%C3%A9ral.md",
+    "general": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/README.md",
     "technique": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/Documentation%20technique.md",
     "utilisateur": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/main/Documentation%20fonctionnelle.md",
     "machine_learning": "https://raw.githubusercontent.com/OlivierBOROT/M2-Projet-ENEDIS/refs/heads/extraction_donnees/Rapport%20Machine%20Learning.md"
