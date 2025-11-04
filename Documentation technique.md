@@ -12,6 +12,7 @@ Plan du document :
     - [Schéma 1 : schéma d'interactions du projet](#schema_1)
     - [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
     - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
+- [technologies utilisées](#techno)
 
 ## 0. Démarrer l'application <a name="demarr_app"></a>
 
@@ -97,12 +98,28 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 #### Schéma 3 : schéma de l'architecture de l'API <a name="schema_3"></a>
 *ajouter le schéma ici*  
 
+## Technologies utilisées <a name="technos"></a>
+
+
+| Technologie | Logo | Description | Lien officiel |
+|------------|------|------------|---------------|
+| Python | ![Python](https://www.python.org/static/community_logos/python-logo.png) | Langage principal utilisé pour le backend, scripts de data, API et Shiny. | [python.org](https://www.python.org/) |
+| FastAPI | ![FastAPI](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png) | Framework Python moderne pour créer l'API REST. | [fastapi.tiangolo.com](https://fastapi.tiangolo.com/) |
+| Shiny for Python | ![Shiny](https://shiny.posit.co/images/shiny-logo.png) | Framework pour construire l'interface web interactive. | [posit.co/shiny](https://shiny.posit.co/) |
+| Docker | ![Docker](https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png) | Conteneurisation pour exécuter l’application sur n’importe quel système. | [docker.com](https://www.docker.com/) |
+| Pandas | ![Pandas](https://pandas.pydata.org/static/img/pandas_white.svg) | Manipulation et analyse des données. | [pandas.pydata.org](https://pandas.pydata.org/) |
+| NumPy | ![NumPy](https://numpy.org/images/logo.svg) | Calcul scientifique et gestion des tableaux numériques. | [numpy.org](https://numpy.org/) |
+| Plotly | ![Plotly](https://images.plot.ly/logo/new-branding/plotly-logomark.png) | Visualisations interactives et graphiques. | [plotly.com](https://plotly.com/) |
+| Folium | ![Folium](https://python-visualization.github.io/folium/_images/folium_logo.png) | Création de cartes interactives. | [python-visualization.github.io/folium](https://python-visualization.github.io/folium/) |
+| scikit-learn | ![Scikit-learn](https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png) | Bibliothèque de machine learning. | [scikit-learn.org](https://scikit-learn.org/) |
+| Jupyter Notebook | ![Jupyter](https://jupyter.org/assets/homepage/main-logo.svg) | Notebook interactif pour exploration et analyses de données. | [jupyter.org](https://jupyter.org/) |
 
 
 ## Annexes
 
 <a name="schema_detaille"></a>
-schéma détaillé
+schéma détaillé de l'architecture du projet
+
 
 ```
 Architecture du projet (détaillé)                        # Description
