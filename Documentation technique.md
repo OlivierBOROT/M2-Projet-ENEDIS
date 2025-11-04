@@ -32,7 +32,7 @@ M2-Projet-ENEDIS/
 │ ├─ server/                                             # Logique serveur Shiny
 │ ├─ www/                                                # images, schémas, style.css
 │ ├─ app.py                                              # fichier principal, gère les appels aux pages et l'application
-│ ├─ server_file.py                                      # logique "back-end" de Shiny, gère les appels aux différentes fonctions
+│ ├─ server_file.py                                      # logique "back-end" de Shiny, gère les appels aux fonctions
 │ └─ requirements.txt                                    # packages utilisés pour le fonctionnement de l'application Shiny
 │
 ├── ml_donnees_finales/                                  # Répertoires des différents notebook de création de modèle
@@ -41,7 +41,7 @@ M2-Projet-ENEDIS/
 │ ├─ Classes_API/                                        # Répertoire des classes d'extraction des données des API
 │ ├─ Transformation_donnees/                             # Fonctions plus spécifiques utilisées dans le notebook main
 │ ├─ data/                                               # Données récupérées
-│ ├─ fonctions_supplémentaires/                          # fonctions pas utilisées dans le notebook mais qui valent le coup d'oeil
+│ ├─ fonctions_supplémentaires/                          # fonctions pas utilisées dans le notebook
 │ ├─ main.ipynb                                          # notebook du processus d'extraction des données
 │ ├─ requirements.txt                                    # packages utilisés pour le fonctionnement du notebook d'extraction.
 │ ├─ stop_words.py                                       # stop_words français
