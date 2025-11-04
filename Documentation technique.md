@@ -86,7 +86,6 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 ## 2. Schémas de l'application <a name="schema_app"></a>
 - [Schéma 1 : schéma d'interactions du projet](#schema_1)
 - [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
-- [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
 
 #### Schéma 1 : schéma d'interactions du projet <a name="schema_1"></a>
 ![schéma impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis.png)
