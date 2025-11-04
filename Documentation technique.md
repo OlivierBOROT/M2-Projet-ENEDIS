@@ -3,12 +3,12 @@
 
 Ce document technique contient les différentes méthodes pour démarrer l'application ainsi que les schémas permettant de comprendre plus facilement son architecture.  
 Plan du document :
-- [Démarrer l'application](#0-démarrer-lapplication)
+- [Démarrer l'application](#demarr_app)
     - [Avec docker](#docker)
     - [en ligne](#en_ligne)
     - [en local](#local)
-- Architecture de l'application
-- Schémas de l'application
+- [Architecture de l'application](#archi_app)
+- [Schémas de l'application](#schema_app)
     - [Schéma 1 : schéma d'interactions du projet](#schema_1)
     - [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
     - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
@@ -38,9 +38,9 @@ Pour lancer l'application, vous avez le choix entre 3 méthodes :
      ```
 
 #### 2. En ligne <a name="en_ligne"></a>
-   - Accéder à l'application via navigateur en copiant le lien suivant ou [ici](https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/) :
+   - Accéder à l'application via navigateur en copiant le lien suivant ou [ici](https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/) :  
      https://019a4bd3-a805-1edf-b315-108164c29847.share.connect.posit.cloud/
-   - Cliquer sur le lien, attendre que l'API se remette en route (maximum une minute), et profitez de l'application !
+   - Cliquez sur le lien, attendez que l'API se remette en route (maximum une minute), et profitez de l'application !
 
 #### 3. En local <a name="local"></a>
    - Cloner le repository :
@@ -63,7 +63,7 @@ Pour lancer l'application, vous avez le choix entre 3 méthodes :
        py app.py
        ```
 
-## 1. Architecture de l’application
+## 1. Architecture de l’application <a name="archi_app"></a>
 
 L’application, disponible sur github [ici](https://github.com/OlivierBOROT/M2-Projet-ENEDIS), est composée de plusieurs modules Python répartis comme suit :
 
@@ -83,13 +83,13 @@ M2-Projet-ENEDIS/
 ```
 note : un schéma bien plus détaillé de l'architecture des données vous attend en bas de ce rapport ([cliquez ici](#schema_detaille)).
 
-## 2. Schémas de l'application
+## 2. Schémas de l'application <a name="schema_app"></a>
 - [Schéma 1 : schéma d'interactions du projet](#schema_1)
 - [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
 - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
 
 #### Schéma 1 : schéma d'interactions du projet <a name="schema_1"></a>
-![Alt text](https://assets.digitalocean.com/articles/alligator/boo.svg "a title")
+![schéma d'interactions du projet impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis.png)
 
 #### Schéma 2 : schéma de l'architecture de l'application Shiny <a name="schema_2"></a>
 *ajouter le schéma ici*  
