@@ -49,7 +49,7 @@ M2-Projet-ENEDIS/
 │
 ├── Documentation fonctionnelle.md                       # Documentation utilisateur
 ├── Documentation technique.md                           # Documentation technique
-├── Rapport Machine Learning.md                          # Documentation générale sur le processus de création du modèle de machine learning
+├── Rapport Machine Learning.md                          # Documentation générale
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
 ```
