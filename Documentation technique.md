@@ -10,8 +10,7 @@ Plan du document :
 - [Architecture de l'application](#archi_app)
 - [Schémas de l'application](#schema_app)
     - [Schéma 1 : schéma d'interactions du projet](#schema_1)
-    - [Schéma 2 : schéma de l'architecture de l'application Shiny](#schema_2)
-    - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
+    - [Schéma 2 : schéma de l'architecture de l'application](#schema_2)
 - [technologies utilisées](#techno)
 
 ## 0. Démarrer l'application <a name="demarr_app"></a>
@@ -69,7 +68,7 @@ Pour lancer l'application, vous avez le choix entre 3 méthodes :
 L’application, disponible sur github [ici](https://github.com/OlivierBOROT/M2-Projet-ENEDIS), est composée de plusieurs modules Python répartis comme suit :
 
 ```
-Architecture du projet                                   Description
+Architecture du projet                                   # Description
 ===================================================================================================
 M2-Projet-ENEDIS/
 ├── api/                                                 # Répertoire de l'api FastAPI
@@ -78,7 +77,7 @@ M2-Projet-ENEDIS/
 ├── extraction_donnees/                                  # Répertoire du notebook d'extraction des données brutes
 ├── Documentation fonctionnelle.md                       # Documentation utilisateur
 ├── Documentation technique.md                           # Documentation technique
-├── Rapport Machine Learning.md                          # Documentation générale
+├── Rapport Machine Learning.md                          # Rapport sur le machine learning
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
 ```
@@ -90,26 +89,23 @@ note : un schéma bien plus détaillé de l'architecture des données vous atten
 - [Schéma 3 : schéma de l'architecture de l'API](#schema_3)
 
 #### Schéma 1 : schéma d'interactions du projet <a name="schema_1"></a>
-![schéma d'interactions du projet impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis.png)
+![schéma impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis.png)
 
-#### Schéma 2 : schéma de l'architecture de l'application Shiny <a name="schema_2"></a>
-*ajouter le schéma ici*  
+#### Schéma 2 : schéma de l'architecture de l'application<a name="schema_2"></a>
+![schéma impossible à charger, disponible dans le répertoire md_ressources](https://github.com/OlivierBOROT/M2-Projet-ENEDIS/blob/main/md_ressources/interaction_projet_M2_enedis_detaille.png)
 
-#### Schéma 3 : schéma de l'architecture de l'API <a name="schema_3"></a>
-*ajouter le schéma ici*  
 
-## Technologies utilisées <a name="technos"></a>
+## Technologies utilisées <a name="techno"></a>
 
 | Technologie | Logo | Description | Lien officiel |
 |--------------|------|--------------|----------------|
-| **Python** | <img src="https://www.python.org/static/community_logos/python-logo.png" width="60" height="60"> | Langage principal utilisé pour le backend, scripts de data, API et Shiny. | [python.org](https://www.python.org/) |
-| **FastAPI** | <img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" width="60" height="60"> | Framework Python moderne pour créer l'API REST. | [fastapi.tiangolo.com](https://fastapi.tiangolo.com/) |
+| **Python** | <img src="https://www.python.org/static/community_logos/python-logo.png" width="60" height="60"> | Langage principal utilisé partout : pour le backend, scripts de data, API et Shiny. | [python.org](https://www.python.org/) |
+| **FastAPI** | <img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" width="60" height="60"> | Framework Python moderne et ultra-rapide pour créer l'API REST. | [fastapi.tiangolo.com](https://fastapi.tiangolo.com/) |
 | **Shiny for Python** | <img src="https://shiny.posit.co/images/shiny-solo.png" width="60" height="60"> | Framework pour construire l'interface web interactive. | [posit.co/shiny](https://shiny.posit.co/) |
 | **Docker** | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Docker_Logo.svg/500px-Docker_Logo.svg.png" width="60" height="60"> | Conteneurisation pour exécuter l’application sur n’importe quel système. | [docker.com](https://www.docker.com/) |
-| **Pandas** | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/langfr-330px-Pandas_logo.svg.png" width="60" height="60"> | Manipulation et analyse des données. | [pandas.pydata.org](https://pandas.pydata.org/) |
-| **NumPy** | <img src="https://numpy.org/images/logo.svg" width="60" height="60"> | Calcul scientifique et gestion des tableaux numériques. | [numpy.org](https://numpy.org/) |
-| **Plotly** | <img src="https://images.plot.ly/logo/new-branding/plotly-logomark.png" width="60" height="60"> | Visualisations interactives et graphiques. | [plotly.com](https://plotly.com/) |
-| **Folium** | <img src="https://python-visualization.github.io/folium/latest/_images/folium_logo.png" width="60" height="60"> | Création de cartes interactives. | [python-visualization.github.io/folium](https://python-visualization.github.io/folium/) |
+| **Pandas** | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Pandas_logo.svg/langfr-330px-Pandas_logo.svg.png" width="60" height="60"> | Package python pour la manipulation et analyse des données. | [pandas.pydata.org](https://pandas.pydata.org/) |
+| **Plotly** | <img src="https://images.plot.ly/logo/new-branding/plotly-logomark.png" width="60" height="60"> | Visualisations interactives et graphiques de l'appli Shiny. | [plotly.com](https://plotly.com/) |
+| **Folium** | <img src="https://python-visualization.github.io/folium/latest/_images/folium_logo.png" width="60" height="60"> | Création de cartes interactives sur l'appli Shiny. | [python-visualization.github.io/folium](https://python-visualization.github.io/folium/) |
 | **Scikit-learn** | <img src="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" width="60" height="60"> | Bibliothèque de machine learning. | [scikit-learn.org](https://scikit-learn.org/) |
 | **Jupyter Notebook** | <img src="https://jupyter.org/assets/homepage/main-logo.svg" width="60" height="60"> | Notebook interactif pour exploration et analyses de données. | [jupyter.org](https://jupyter.org/) |
 
@@ -156,7 +152,7 @@ M2-Projet-ENEDIS/
 │
 ├── Documentation fonctionnelle.md                       # Documentation utilisateur
 ├── Documentation technique.md                           # Documentation technique
-├── Rapport Machine Learning.md                          # Documentation générale
+├── Rapport Machine Learning.md                          # Rapport sur le machine learning
 ├── README.md                                            # Readme
 └── requirements.txt                                     # packages utilisés pour le fonctionnement de tout le projet.
 ```
